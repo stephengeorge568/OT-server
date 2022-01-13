@@ -12,13 +12,13 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/broker"); //topic
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/string");
-        registry.addEndpoint("/string").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:4200");
+        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:4200").withSockJS();
     }
 }
