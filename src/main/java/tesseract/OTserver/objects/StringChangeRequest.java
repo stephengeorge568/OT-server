@@ -3,7 +3,7 @@ package tesseract.OTserver.objects;
 public class StringChangeRequest {
     private String timestamp;
     private String text;
-    private Integer number;
+    private Integer index;
 
     public String getTimestamp() {
         return timestamp;
@@ -23,12 +23,12 @@ public class StringChangeRequest {
         return this;
     }
 
-    public Integer getNumber() {
-        return number;
+    public Integer getIndex() {
+        return index;
     }
 
-    public StringChangeRequest setNumber(Integer number) {
-        this.number = number;
+    public StringChangeRequest setIndex(Integer index) {
+        this.index = index;
         return this;
     }
 }

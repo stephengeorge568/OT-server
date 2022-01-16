@@ -15,6 +15,7 @@ public class WebSocketController {
     public StringChangeRequest send(StringChangeRequest stringChangeRequest) throws Exception {
         System.out.println("Request text: " + stringChangeRequest.getText());
         return stringChangeRequest;
+
     }
 
 
