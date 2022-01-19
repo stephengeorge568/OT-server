@@ -11,7 +11,7 @@ import tesseract.OTserver.objects.StringChangeRequest;
 public class WebSocketController {
 
     @MessageMapping("/string")
-    @SendTo("/broker/string-change-requests")
+    @SendTo("/broker/string-change-request")
     public StringChangeRequest send(StringChangeRequest stringChangeRequest) throws Exception {
         System.out.println("Request text: " + stringChangeRequest.getText());
         return stringChangeRequest;

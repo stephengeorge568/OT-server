@@ -4,6 +4,7 @@ public class StringChangeRequest {
     private String timestamp;
     private String text;
     private Integer index;
+    private String identity; // currently just client ip. this will change
 
     public String getTimestamp() {
         return timestamp;
@@ -29,6 +30,15 @@ public class StringChangeRequest {
 
     public StringChangeRequest setIndex(Integer index) {
         this.index = index;
+        return this;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public StringChangeRequest setIdentity(String identity) {
+        this.identity = identity;
         return this;
     }
 }
