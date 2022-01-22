@@ -1,10 +1,20 @@
 package tesseract.OTserver.objects;
+import java.time.Instant;
 
-public class StringChangeRequest {
+public class StringChangeRequest implements Comparable<StringChangeRequest>{
     private String timestamp;
     private String text;
     private String identity; // currently just client ip. this will change
     private MonacoRange range;
+    private Long revID;
+
+    public Long getRevID() {
+        return revID;
+    }
+
+    public void setRevID(Long revID) {
+        this.revID = revID;
+    }
 
     public String getTimestamp() {
         return timestamp;
@@ -40,5 +50,16 @@ public class StringChangeRequest {
 
     public void setRange(MonacoRange range) {
         this.range = range;
+    }
+
+    /*
+    0 if equal
+    greater than 0 if this is greater than other
+    less than 0 if this is less than other
+     */
+    @Override
+    public int compareTo(StringChangeRequest stringChangeRequest) {
+        // ex: 2022-01-22T21:43:12.547Z
+        return Instant.parse(this.timestamp).compareTo(Instant.parse(stringChangeRequest.timestamp));
     }
 }

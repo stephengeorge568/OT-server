@@ -7,11 +7,15 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import tesseract.OTserver.objects.StringChangeRequest;
 import tesseract.OTserver.objects.StringResponse;
+import tesseract.OTserver.services.DocumentService;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class StringChangeController {
+
+    @Autowired
+    private DocumentService documentService;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -24,6 +28,9 @@ public class StringChangeController {
     )
     @ResponseBody
     public void stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
+
+        //this.documentService.submitChange(request);
+
         this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", request);
     }
 
