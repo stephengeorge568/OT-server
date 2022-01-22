@@ -3,4 +3,6 @@ tesseract\OTserver\config\WebSocketConfig.class
 tesseract\OTserver\controllers\WebSocketController.class
 tesseract\OTserver\config\WebConfig.class
 tesseract\OTserver\controllers\StringChangeController.class
+tesseract\OTserver\objects\StringResponse.class
+tesseract\OTserver\objects\MonacoRange.class
 tesseract\OTserver\objects\StringChangeRequest.class

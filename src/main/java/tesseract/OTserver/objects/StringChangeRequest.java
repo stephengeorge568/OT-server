@@ -3,8 +3,8 @@ package tesseract.OTserver.objects;
 public class StringChangeRequest {
     private String timestamp;
     private String text;
-    private Integer index;
     private String identity; // currently just client ip. this will change
+    private MonacoRange range;
 
     public String getTimestamp() {
         return timestamp;
@@ -24,14 +24,6 @@ public class StringChangeRequest {
         return this;
     }
 
-    public Integer getIndex() {
-        return index;
-    }
-
-    public StringChangeRequest setIndex(Integer index) {
-        this.index = index;
-        return this;
-    }
 
     public String getIdentity() {
         return identity;
@@ -40,5 +32,13 @@ public class StringChangeRequest {
     public StringChangeRequest setIdentity(String identity) {
         this.identity = identity;
         return this;
+    }
+
+    public MonacoRange getRange() {
+        return range;
+    }
+
+    public void setRange(MonacoRange range) {
+        this.range = range;
     }
 }
