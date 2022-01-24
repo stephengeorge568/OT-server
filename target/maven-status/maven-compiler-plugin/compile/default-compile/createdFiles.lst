@@ -1,8 +1,12 @@
-tesseract\OTserver\OtServerApplication.class
+tesseract\OTserver\objects\Document.class
 tesseract\OTserver\config\WebSocketConfig.class
 tesseract\OTserver\controllers\WebSocketController.class
-tesseract\OTserver\config\WebConfig.class
 tesseract\OTserver\controllers\StringChangeController.class
 tesseract\OTserver\objects\StringResponse.class
-tesseract\OTserver\objects\MonacoRange.class
+tesseract\OTserver\services\DocumentService.class
 tesseract\OTserver\objects\StringChangeRequest.class
+tesseract\OTserver\OtServerApplication.class
+tesseract\OTserver\objects\DocumentLanguage.class
+tesseract\OTserver\config\WebConfig.class
+tesseract\OTserver\objects\MonacoRange.class
+tesseract\OTserver\util\OperationalTransformation.class

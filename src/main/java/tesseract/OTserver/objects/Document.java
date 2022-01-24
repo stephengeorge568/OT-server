@@ -1,21 +1,14 @@
 package tesseract.OTserver.objects;
 
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class Document {
 
     private DocumentLanguage language;
     private String model;
     private Long revID;
-    private Stack<StringChangeRequest> changeHistory;
-
-    /*
-        Notes: not thread safe? may be issue idk
-        head of queue is LEAST. THIS must be accounted for TODO
-     */
-    private PriorityQueue<StringChangeRequest> pendingChangesQueue;
+    private ArrayList<StringChangeRequest> changeHistory;
+    private Queue<StringChangeRequest> pendingChangesQueue;
 
     // Will need new constructor when its ready to pull data from previous session
     // For new documents
@@ -23,8 +16,8 @@ public class Document {
         this.language = DocumentLanguage.JAVA;
         this.model = "";
         this.revID = 1L;
-        this.changeHistory = new Stack<>();
-        this.pendingChangesQueue = new PriorityQueue<>();
+        this.changeHistory = new ArrayList<>();
+        this.pendingChangesQueue = new LinkedList<>();
     }
 
     public String getModel() {
@@ -43,15 +36,15 @@ public class Document {
         this.revID = revID;
     }
 
-    public Stack<StringChangeRequest> getChangeHistory() {
+    public ArrayList<StringChangeRequest> getChangeHistory() {
         return changeHistory;
     }
 
-    public void setChangeHistory(Stack<StringChangeRequest> changeHistory) {
+    public void setChangeHistory(ArrayList<StringChangeRequest> changeHistory) {
         this.changeHistory = changeHistory;
     }
 
-    public PriorityQueue<StringChangeRequest> getPendingChangesQueue() {
+    public Queue<StringChangeRequest> getPendingChangesQueue() {
         return pendingChangesQueue;
     }
 

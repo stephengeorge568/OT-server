@@ -29,7 +29,7 @@ public class StringChangeController {
     @ResponseBody
     public void stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
 
-        //this.documentService.submitChange(request);
+        this.documentService.submitChange(request);
 
         this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", request);
     }

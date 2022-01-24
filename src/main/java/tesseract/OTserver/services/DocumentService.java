@@ -16,9 +16,28 @@ public class DocumentService {
     }
 
     public void submitChange(StringChangeRequest request) {
+        // put change in pending changes queue
+        currentDocument.getPendingChangesQueue().add(request);
 
+
+
+
+
+
+        // once operation is transformed and committed, add new change to change history
+
+        // once propogated to other clients, return new revID
     }
 
+
+
+    public void printStuff() {
+        System.out.println("------------------------------ Start here");
+        currentDocument.getPendingChangesQueue().stream().forEach(r -> {
+            System.out.println(r.getText());
+        });
+
+    }
 
 
 }
