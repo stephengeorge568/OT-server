@@ -18,11 +18,13 @@ public class DocumentService {
     public void submitChange(StringChangeRequest request) {
         // put change in pending changes queue
         currentDocument.getPendingChangesQueue().add(request);
-
-
-
-
-
+        System.out.println("Thread: " + request.getText());
+        try {
+            Thread.currentThread().sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Thread: " + request.getText() + " finished");
 
         // once operation is transformed and committed, add new change to change history
 
