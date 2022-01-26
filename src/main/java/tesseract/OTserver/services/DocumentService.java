@@ -1,11 +1,16 @@
 package tesseract.OTserver.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import tesseract.OTserver.objects.Document;
 import tesseract.OTserver.objects.StringChangeRequest;
 
 @Service
 public class DocumentService {
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     private Document currentDocument;
 
@@ -15,20 +20,31 @@ public class DocumentService {
         this.currentDocument = new Document();
     }
 
-    public void submitChange(StringChangeRequest request) {
+    // Thread.sleep is a temporary solution. This will need to be redesigned more than likely TODO
+    public Integer submitChange(StringChangeRequest request) {
         // put change in pending changes queue
         currentDocument.getPendingChangesQueue().add(request);
-        System.out.println("Thread: " + request.getText());
-        try {
-            Thread.currentThread().sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (!(this.currentDocument.getPendingChangesQueue().peek().getTimestamp().equals(request.getTimestamp())
+                && this.currentDocument.getPendingChangesQueue().peek().getIdentity().equals(request.getIdentity()))) {
+            try {
+                Thread.currentThread().sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println("Thread: " + request.getText() + " finished");
+        // do operations
+        // this will return a new StringChangeRequest. this will change below.
 
-        // once operation is transformed and committed, add new change to change history
+        // put request in history. remove request from queue.
+        this.currentDocument.getChangeHistory().add(this.currentDocument.getPendingChangesQueue().remove());
+
+        // send to change to other clients
+        this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", request);
 
         // once propogated to other clients, return new revID
+        // This is a placeholder
+        int temp = 0;
+        return temp;
     }
 
 
