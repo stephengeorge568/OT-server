@@ -31,7 +31,7 @@ public class StringChangeController {
             method = RequestMethod.GET,
             path = "identity"
     )
-    @ResponseBody
+    @ResponseBody // TODO this can be ResponseEntity<String>
     public StringResponse getIdentity(HttpServletRequest httpRequest) {
         System.out.println(httpRequest.getRemoteAddr() + " has connected via websocket.");
         return new StringResponse(httpRequest.getRemoteAddr());

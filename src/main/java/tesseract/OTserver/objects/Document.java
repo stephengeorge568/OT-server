@@ -7,7 +7,7 @@ public class Document {
     private DocumentLanguage language;
     private String model;
     private Long revID;
-    private ArrayList<StringChangeRequest> changeHistory;
+    private HashMap<Long, ArrayList<StringChangeRequest>> changeHistory;
     private Queue<StringChangeRequest> pendingChangesQueue;
 
     // Will need new constructor when its ready to pull data from previous session
@@ -16,7 +16,7 @@ public class Document {
         this.language = DocumentLanguage.JAVA;
         this.model = "";
         this.revID = 1L;
-        this.changeHistory = new ArrayList<>();
+        this.changeHistory = new HashMap<>();
         this.pendingChangesQueue = new LinkedList<>();
     }
 
@@ -36,11 +36,11 @@ public class Document {
         this.revID = revID;
     }
 
-    public ArrayList<StringChangeRequest> getChangeHistory() {
+    public HashMap<Long, ArrayList<StringChangeRequest>> getChangeHistory() {
         return changeHistory;
     }
 
-    public void setChangeHistory(ArrayList<StringChangeRequest> changeHistory) {
+    public void setChangeHistory(HashMap<Long, ArrayList<StringChangeRequest>> changeHistory) {
         this.changeHistory = changeHistory;
     }
 

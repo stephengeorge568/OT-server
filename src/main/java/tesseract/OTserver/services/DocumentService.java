@@ -5,6 +5,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import tesseract.OTserver.objects.Document;
 import tesseract.OTserver.objects.StringChangeRequest;
+import tesseract.OTserver.util.OperationalTransformation;
 
 @Service
 public class DocumentService {
@@ -35,8 +36,12 @@ public class DocumentService {
         // do operations
         // this will return a new StringChangeRequest. this will change below.
 
+        StringChangeRequest newChangeRequest = OperationalTransformation.transformThisBitch(request, this.currentDocument.getChangeHistory());
+
         // put request in history. remove request from queue.
-        this.currentDocument.getChangeHistory().add(this.currentDocument.getPendingChangesQueue().remove());
+        // THIS REV ID MIGHT BE SOMETHING ELSE IDK THINK ABOUT THIS LATER
+        this.currentDocument.getChangeHistory().get(newChangeRequest.getRevID()).add(newChangeRequest);
+        this.currentDocument.getPendingChangesQueue().remove();
 
         // send to change to other clients
         this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", request);
