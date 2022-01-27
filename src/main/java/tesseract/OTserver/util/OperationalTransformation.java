@@ -14,11 +14,13 @@ public class OperationalTransformation {
         // gather all the previous requests that will affect this one
         // update request to account for relevant historical requests
         for (StringChangeRequest historicalRequest : getAffectingRequests(request.getRevID(), history)) {
-
+            transformOperation(request, historicalRequest);
         }
 
+        // might need to update revID to something IDk think about this later
+
         // return the new request
-        return null;
+        return request;
     }
 
     // returns list of changes with revIDs after given revID. List is ordered by revID in ascending order...
