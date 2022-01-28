@@ -35,6 +35,17 @@ public class OperationalTransformation {
     }
 
     private static void transformOperation(StringChangeRequest prev, StringChangeRequest next) {
+        // just build a list of rules that we can confirm. shits complicated asf
+
+
+
+        // no matter what, if prev is exclusively after next in terms of range
+        // next does not change
+
+        // in regards to insert after insert with \n's in prev. This only affects column # if
+        // they are on the same line. then, consider how many characters after last \n
+        // and before next.text. Thats how many chars to shift column #s
+
         Integer newSC;
         Integer newEC;
         Integer newSL;
