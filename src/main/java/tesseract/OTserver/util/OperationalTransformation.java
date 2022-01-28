@@ -4,6 +4,8 @@ import tesseract.OTserver.objects.StringChangeRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OperationalTransformation {
 
@@ -14,7 +16,7 @@ public class OperationalTransformation {
         // gather all the previous requests that will affect this one
         // update request to account for relevant historical requests
         for (StringChangeRequest historicalRequest : getAffectingRequests(request.getRevID(), history)) {
-            transformOperation(request, historicalRequest);
+            transformOperation(historicalRequest, request);
         }
 
         // might need to update revID to something IDk think about this later
@@ -32,8 +34,26 @@ public class OperationalTransformation {
         } return relevantRequests;
     }
 
-    private static void transformOperation(StringChangeRequest current, StringChangeRequest previous) {
+    private static void transformOperation(StringChangeRequest prev, StringChangeRequest next) {
+        Integer newSC;
+        Integer newEC;
+        Integer newSL;
+        Integer newEL;
+        // INSERT after INSERT considering \n
+//        if (prev.getRange().getStartLineNumber() <= next.getRange().getStartLineNumber() &&
+//            prev.getRange().getEndLineNumber() <= next.getRange().getStartLineNumber() &&)
 
+        int countOfNewLines = 0;
+        Matcher m = Pattern.compile("(\\r\\n)|(\\n)|(\\r)").matcher(prev.getText());
+        while (m.find())
+            countOfNewLines ++; // sl & el will have this added to them
+        newSL = next.getRange().getStartLineNumber() + countOfNewLines + 1;
+        newEL = next.getRange().getEndLineNumber() + countOfNewLines + 1;
+
+        // if this > 0, sc ec will be diff bc of it also
+        if (countOfNewLines > 0) {
+
+        }
     }
 
 
