@@ -34,6 +34,19 @@ public class OperationalTransformation {
         } return relevantRequests;
     }
 
+    /*
+        If prev is exclusively after next than next wont change
+        no new line, no intersect, on same line
+            next sc = next.sc - (prev.ec - prev.sc) - prev.text.length // (same for next ec)
+
+       when does stuff chagne:
+            TODO prev is before next
+            TODO theres new lines on prior lines
+            TODO theres new line on same line as next
+            replacing on same line alters columns
+            TODO adjust for deletion of preceeding stuff to include newlines
+            TODO conflicting ranges, might be diff for insert/remove/combinations etc
+     */
     private static void transformOperation(StringChangeRequest prev, StringChangeRequest next) {
         // just build a list of rules that we can confirm. shits complicated asf
 
