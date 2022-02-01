@@ -1,0 +1,63 @@
+If prev is exclusively after next than next wont change
+        no new line, no intersect, on same line
+            next sc = next.sc - (prev.ec - prev.sc) - prev.text.length // (same for next ec)
+
+       when does stuff chagne:
+            TODO prev is before next
+            theres new lines on prior lines
+                - next.*l += # of new lines in prev
+            theres new line on same line as next
+                - next.*l += prev.*l + # of new lines
+                - next.*c = next.*c - # of chars after lastNL on same line
+            replacing on same line alters columns
+            TODO adjust for deletion of preceeding stuff to include newlines
+            TODO conflicting ranges, might be diff for insert/remove/combinations etc
+
+
+
+
+
+
+new lines:
+    abcdef
+
+    prev:
+    ins \n @ 4
+    sc 4
+    ec 4
+    sl 1
+    el 1
+
+    next:
+    ins x @ 7       ->      ins x
+    sc 7                    sc 4
+    ec 7                    ec 4    *c = next.*c - # of characters after last new line on same line as next
+    sl 1                    sl 2    *l = prev.*l + # of new lines
+    el 1                    el 2
+
+conflicting ranges:
+    abc\ndef\nghi
+    abc
+    def
+    hgi
+
+
+    prev:
+    ins xyz (replace cde)
+    sc 3
+    ec 3
+    sl 1
+    el 2
+
+    prev:
+    ins mno (replace efg)
+    sc 2
+    ec 2
+    sl 2
+    el 3
+
+    expected output:
+    abxyzmnohi
+
+    (1-4] (3-6]
+    Consider 3 is already covere

@@ -7,6 +7,13 @@ public class MonacoRange {
     private Integer endLineNumber;
     private Integer startLineNumber;
 
+    public MonacoRange(Integer startColumn, Integer endColumn, Integer startLineNumber, Integer endLineNumber) {
+        this.endColumn = endColumn;
+        this.startColumn = startColumn;
+        this.endLineNumber = endLineNumber;
+        this.startLineNumber = startLineNumber;
+    }
+
     public Integer getEndColumn() {
         return endColumn;
     }

@@ -1,5 +1,6 @@
 package tesseract.OTserver.util;
 
+import tesseract.OTserver.objects.MonacoRange;
 import tesseract.OTserver.objects.StringChangeRequest;
 
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class OperationalTransformation {
+
+    // TODO just make this a bean or a service idk whcih is more epxected
 
     public static StringChangeRequest transformThisBitch(StringChangeRequest request,
                                                          HashMap<Long, ArrayList<StringChangeRequest>> history) {
@@ -48,7 +51,7 @@ public class OperationalTransformation {
             TODO conflicting ranges, might be diff for insert/remove/combinations etc
      */
     private static void transformOperation(StringChangeRequest prev, StringChangeRequest next) {
-        // just build a list of rules that we can confirm. shits complicated asf
+        // just build a list of rules that we can confirm.
 
 
 
@@ -80,5 +83,13 @@ public class OperationalTransformation {
         }
     }
 
+    public static boolean isPreviousRequestRelevent(MonacoRange prev, MonacoRange next) {
+        boolean isPrevStartLineAfterNextEndLine = prev.getStartLineNumber() > next.getEndLineNumber();
+        boolean isPrevStartColAfterNextEndCol = prev.getStartLineNumber() == next.getEndLineNumber()
+                && prev.getStartColumn() >= next.getEndColumn();
+
+        if (isPrevStartLineAfterNextEndLine || isPrevStartColAfterNextEndCol) return false;
+        return true;
+    }
 
 }
