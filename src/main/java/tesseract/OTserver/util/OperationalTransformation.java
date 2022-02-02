@@ -14,7 +14,6 @@ public class OperationalTransformation {
 
     public static StringChangeRequest transformThisBitch(StringChangeRequest request,
                                                          HashMap<Long, ArrayList<StringChangeRequest>> history) {
-        // transform the shit outta that request
 
         // gather all the previous requests that will affect this one
         // update request to account for relevant historical requests
@@ -82,11 +81,25 @@ public class OperationalTransformation {
 
         }
     }
+    /*
+    If on same line, if prev is simple insert and endcol before start col of next the nyes relevant
 
+    if next is simple insert, than its end column
+     */
     public static boolean isPreviousRequestRelevent(MonacoRange prev, MonacoRange next) {
+        boolean isPrevSimpleInsert = prev.getStartLineNumber() == prev.getEndLineNumber()
+                && prev.getStartColumn() == prev.getEndColumn();
+        boolean isNextSimpleInsert = next.getStartLineNumber() == next.getEndLineNumber()
+                && next.getStartColumn() == next.getEndColumn();
         boolean isPrevStartLineAfterNextEndLine = prev.getStartLineNumber() > next.getEndLineNumber();
         boolean isPrevStartColAfterNextEndCol = prev.getStartLineNumber() == next.getEndLineNumber()
                 && prev.getStartColumn() >= next.getEndColumn();
+
+        boolean isSameLine = prev.getStartLineNumber() == next.getEndLineNumber();
+
+        if (isSameLine && isPrevSimpleInsert && prev.getStartColumn() >= next.getEndColumn()) return true;
+
+
 
         if (isPrevStartLineAfterNextEndLine || isPrevStartColAfterNextEndCol) return false;
         return true;

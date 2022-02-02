@@ -14,6 +14,7 @@ public class OperationalTransformationTests {
     }
 
     // play with naming this feels weird
+    // startColumn, endColumn, startLineNumber, endLineNumber
     @Test
     void isPreviousRequestRelevent_assertTrue_PrevLineAndColumnAfterNext() {
         MonacoRange prev = new MonacoRange(1,1,1,1);
@@ -29,9 +30,23 @@ public class OperationalTransformationTests {
     }
 
     @Test
-    void isPreviousRequestRelevent_assertTrue_namethislater() {
-        MonacoRange prev = new MonacoRange(3,6,1,2);
+    void isPreviousRequestRelevent_assertTrue_IntersectingRangesPrevInFront() {
+        MonacoRange prev = new MonacoRange(3,7,1,2);
         MonacoRange next = new MonacoRange(5,9,2,2);
+        assertEquals(true, OperationalTransformation.isPreviousRequestRelevent(prev, next));
+    }
+
+    @Test
+    void isPreviousRequestRelevent_assertTrue_IntersectingRangesPrevInBack() {
+        MonacoRange next = new MonacoRange(3,7,1,2);
+        MonacoRange prev = new MonacoRange(5,9,2,2);
+        assertEquals(true, OperationalTransformation.isPreviousRequestRelevent(prev, next));
+    }
+
+    @Test
+    void isPreviousRequestRelevent_assertTrue_SameRange() {
+        MonacoRange prev = new MonacoRange(1,1,1,1);
+        MonacoRange next = new MonacoRange(1,1,1,1);
         assertEquals(true, OperationalTransformation.isPreviousRequestRelevent(prev, next));
     }
 
