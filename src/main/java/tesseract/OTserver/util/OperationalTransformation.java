@@ -52,11 +52,6 @@ public class OperationalTransformation {
     private static void transformOperation(StringChangeRequest prev, StringChangeRequest next) {
         // just build a list of rules that we can confirm.
 
-
-
-        // no matter what, if prev is exclusively after next in terms of range
-        // next does not change
-
         // in regards to insert after insert with \n's in prev. This only affects column # if
         // they are on the same line. then, consider how many characters after last \n
         // and before next.text. Thats how many chars to shift column #s
@@ -81,27 +76,26 @@ public class OperationalTransformation {
 
         }
     }
-    /*
-    If on same line, if prev is simple insert and endcol before start col of next the nyes relevant
 
-    if next is simple insert, than its end column
-     */
+    // Default is true. Finds conditions under which prev does not affect next and can be ignored
     public static boolean isPreviousRequestRelevent(MonacoRange prev, MonacoRange next) {
-        boolean isPrevSimpleInsert = prev.getStartLineNumber() == prev.getEndLineNumber()
-                && prev.getStartColumn() == prev.getEndColumn();
-        boolean isNextSimpleInsert = next.getStartLineNumber() == next.getEndLineNumber()
-                && next.getStartColumn() == next.getEndColumn();
-        boolean isPrevStartLineAfterNextEndLine = prev.getStartLineNumber() > next.getEndLineNumber();
-        boolean isPrevStartColAfterNextEndCol = prev.getStartLineNumber() == next.getEndLineNumber()
-                && prev.getStartColumn() >= next.getEndColumn();
 
+        boolean isNextSimpleInsert = next.getStartLineNumber() - next.getEndLineNumber() == 0
+                && next.getStartColumn() - next.getEndColumn() == 0;
+        boolean isPrevStartLineAfterNextEndLine = prev.getStartLineNumber() > next.getEndLineNumber();
         boolean isSameLine = prev.getStartLineNumber() == next.getEndLineNumber();
 
-        if (isSameLine && isPrevSimpleInsert && prev.getStartColumn() >= next.getEndColumn()) return true;
-
-
-
-        if (isPrevStartLineAfterNextEndLine || isPrevStartColAfterNextEndCol) return false;
+        if (isPrevStartLineAfterNextEndLine) return false; // if prev is on bigger line # than next - ignore
+        if (isSameLine) { // if prev starts on same line that next ends
+            // if next is simple insert, then next.ec cannot be prev.sc
+            if(isNextSimpleInsert) {
+                // next.ec must be less than prev.sc
+                if (next.getEndColumn() < prev.getStartColumn()) return false;
+            } else {
+                // next.ec must be less or equal
+                if (next.getEndColumn() <= prev.getStartColumn()) return false;
+            }
+        }
         return true;
     }
 

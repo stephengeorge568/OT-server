@@ -19,6 +19,12 @@ If prev is exclusively after next than next wont change
                 if prev sc > next ec
 
             issue is prev start column, and next end column. when is next ec inclusive, and when is it exclusive
+            when prev starts after next end on same line:
+            if next is a simple insert, then next.ec is illegal and cannot be prev.sc
+            if next is not simple insert and instead a replace, next.ec can be used as prev.sc
+
+
+
 
 
 new lines:
@@ -64,3 +70,10 @@ conflicting ranges:
 
     (1-4] (3-6]
     Consider 3 is already covere
+
+
+
+when prev starts after next end on same line:
+if next is a simple insert, then next.ec is illegal and cannot be prev.sc
+if next is not simple insert and instead a replace, next.ec can be used as prev.sc
+
