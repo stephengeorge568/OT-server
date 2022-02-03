@@ -49,32 +49,14 @@ public class OperationalTransformation {
             TODO adjust for deletion of preceeding stuff to include newlines
             TODO conflicting ranges, might be diff for insert/remove/combinations etc
      */
-    private static void transformOperation(StringChangeRequest prev, StringChangeRequest next) {
-        // just build a list of rules that we can confirm.
+    private static StringChangeRequest transformOperation(StringChangeRequest prev, StringChangeRequest next) {
 
-        // in regards to insert after insert with \n's in prev. This only affects column # if
-        // they are on the same line. then, consider how many characters after last \n
-        // and before next.text. Thats how many chars to shift column #s
+        if (isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
 
-        Integer newSC;
-        Integer newEC;
-        Integer newSL;
-        Integer newEL;
-        // INSERT after INSERT considering \n
-//        if (prev.getRange().getStartLineNumber() <= next.getRange().getStartLineNumber() &&
-//            prev.getRange().getEndLineNumber() <= next.getRange().getStartLineNumber() &&)
-
-        int countOfNewLines = 0;
-        Matcher m = Pattern.compile("(\\r\\n)|(\\n)|(\\r)").matcher(prev.getText());
-        while (m.find())
-            countOfNewLines ++; // sl & el will have this added to them
-        newSL = next.getRange().getStartLineNumber() + countOfNewLines + 1;
-        newEL = next.getRange().getEndLineNumber() + countOfNewLines + 1;
-
-        // if this > 0, sc ec will be diff bc of it also
-        if (countOfNewLines > 0) {
-
+            // return a new StringChangeRequest
         }
+
+        return next;
     }
 
     // Default is true. Finds conditions under which prev does not affect next and can be ignored
