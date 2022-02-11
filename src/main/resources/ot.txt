@@ -1,0 +1,25 @@
+Different scenarios:
+    prev insertions:
+        if prev has new lines:
+            next.sc&ec += # of new lines in prev.text
+
+        if prev.ec == next.sc
+    prev deletions:
+
+    prev selection changes:
+
+
+
+
+# Algo
+# recall selection does not include strict pastes
+if !selection:
+    if insertion:
+        next.sl&el += # of new lines in prev.text
+        if prev on same line as next:
+            next.sc&ec += prev.text.length
+    elif deletion:
+        next.sl&el -= # of new lines in prev.text
+        if prev on same line as next:
+                    next.sc&ec -= prev.text.length
+else
