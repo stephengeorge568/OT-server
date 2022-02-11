@@ -13,6 +13,15 @@ If prev is exclusively after next than next wont change
             TODO adjust for deletion of preceeding stuff to include newlines
             TODO conflicting ranges, might be diff for insert/remove/combinations etc
 
+       when is prev considered "after" next:
+            when prev start line is after next end line
+            if prev start line same as next end line:
+                if prev sc > next ec
+
+            issue is prev start column, and next end column. when is next ec inclusive, and when is it exclusive
+            when prev starts after next end on same line:
+            if next is a simple insert, then next.ec is illegal and cannot be prev.sc
+            if next is not simple insert and instead a replace, next.ec can be used as prev.sc
 
 
 
@@ -61,3 +70,10 @@ conflicting ranges:
 
     (1-4] (3-6]
     Consider 3 is already covere
+
+
+
+when prev starts after next end on same line:
+if next is a simple insert, then next.ec is illegal and cannot be prev.sc
+if next is not simple insert and instead a replace, next.ec can be used as prev.sc
+

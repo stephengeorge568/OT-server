@@ -50,5 +50,19 @@ public class OperationalTransformationTests {
         assertEquals(true, OperationalTransformation.isPreviousRequestRelevent(prev, next));
     }
 
+    @Test
+    void isPreviousRequestRelevent_assertFalse_PrevECIgnoredBecauseItsRange() {
+        MonacoRange prev = new MonacoRange(2,2,1,1);
+        MonacoRange next = new MonacoRange(1,2,1,1);
+        assertEquals(false, OperationalTransformation.isPreviousRequestRelevent(prev, next));
+    }
+
+    @Test
+    void isPreviousRequestRelevent_assertTrue_PrevECConsideredBecauseSimpleInsert() {
+        MonacoRange prev = new MonacoRange(2,2,1,1);
+        MonacoRange next = new MonacoRange(2,2,1,1);
+        assertEquals(true, OperationalTransformation.isPreviousRequestRelevent(prev, next));
+    }
+
 }
 
