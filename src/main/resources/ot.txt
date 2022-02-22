@@ -5,7 +5,8 @@ Different scenarios:
 
         if prev.ec == next.sc
     prev deletions:
-
+        # deletion of new line works like a range for both column and row
+        # all deletions work as ranges
     prev selection changes:
 
 
@@ -19,7 +20,7 @@ if !selection:
         if prev on same line as next:
             next.sc&ec += prev.text.length
     elif deletion:
-        next.sl&el -= # of new lines in prev.text
+        next.sl&el -= # of new lines in prev.text       # this may all be wrong
         if prev on same line as next:
                     next.sc&ec -= prev.text.length
 else

@@ -18,6 +18,7 @@ public class OperationalTransformation {
         // gather all the previous requests that will affect this one
         // update request to account for relevant historical requests
         for (StringChangeRequest historicalRequest : getAffectingRequests(request.getRevID(), history)) {
+            // May need to do request = transformOper... TODO
             transformOperation(historicalRequest, request);
         }
 

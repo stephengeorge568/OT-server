@@ -33,6 +33,7 @@ public class StringChangeController {
     )
     @ResponseBody // TODO this can be ResponseEntity<String>
     public StringResponse getIdentity(HttpServletRequest httpRequest) {
+        // this is a lie because geting GET request doesnt mean Websockets connected TODO
         System.out.println(httpRequest.getRemoteAddr() + " has connected via websocket.");
         return new StringResponse(httpRequest.getRemoteAddr());
     }
