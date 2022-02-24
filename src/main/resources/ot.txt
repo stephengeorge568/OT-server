@@ -13,13 +13,39 @@ Different scenarios:
 
 # Algo
 # recall selection does not include strict pastes
-if !selection:
-    if insertion:
+if !p.selection:
+    if p.insertion:
         next.sl&el += # of new lines in prev.text
         if prev on same line as next:
             next.sc&ec += prev.text.length
-    elif deletion:
+    elif p.deletion:
         next.sl&el -= # of new lines in prev.text
         if prev on same line as next:
                     next.sc&ec -= prev.text.length
 else
+    # notes below
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Selection notes
+
+If prev.ec == next.sc
+    then next.*c & *l need to be updated
+else
+    only next.*l gets updates
+
+
