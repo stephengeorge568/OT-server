@@ -28,7 +28,7 @@ public class DocumentService {
         while (!(this.currentDocument.getPendingChangesQueue().peek().getTimestamp().equals(request.getTimestamp())
                 && this.currentDocument.getPendingChangesQueue().peek().getIdentity().equals(request.getIdentity()))) {
             try {
-                Thread.currentThread().sleep(50);
+                Thread.currentThread().sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
