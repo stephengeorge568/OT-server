@@ -1,13 +1,17 @@
 Different scenarios:
-    prev insertions:
-        if prev has new lines:
-            next.sc&ec += # of new lines in prev.text
+        prev insertions:
+                if prev has new lines:
+                    next.sl&el += # of new lines in prev.text
 
-        if prev.ec == next.sc
-    prev deletions:
-        # deletion of new line works like a range for both column and row
-        # all deletions work as ranges
-    prev selection changes:
+                if prev.el == next.sl
+                        next.sc = next.sc - prev.length after last \n
+                if prev.el == next.el       # this only necessary for selections. assuming simple insert. this is also
+                                            # ran with above sc adjustment
+                        next.ec = next.ec - prev.length after last \n
+        prev deletions:
+                if prev range contains next
+                        shift next to start of prev and adjust next ends accordingly
+        prev selection changes:
 
 
 
@@ -48,5 +52,32 @@ If prev.ec == next.sc
     then next.*c & *l need to be updated
 else
     only next.*l gets updates
+
+
+
+
+
+# Delete notes
+
+# Delete single element (both del and <- work same way)
+sc: 8
+ec: 9
+sl: 1
+el: 1
+
+# Delete range on same line
+sc: 1
+ec: 6
+sl: 1
+el: 1
+
+# Delete range including one new line in middle
+sc: 7
+ec: 6
+sl: 1
+el: 2
+
+
+
 
 
