@@ -1,20 +1,24 @@
-Different scenarios:
+Different scenarios: # granted prev is before next
         prev insertions:
                 if prev has new lines:
                     next.sl&el += # of new lines in prev.text
 
                 if prev.el == next.sl
                         next.sc = next.sc - prev.length after last \n
-                if prev.el == next.el       # this only necessary for selections. assuming simple insert. this is also
-                                            # ran with above sc adjustment
+
+                if prev.el == next.el
+
                         next.ec = next.ec - prev.length after last \n
-        prev deletions:
+
+        prev selection changes (replace/deletion):
                 if prev range contains next
                         shift next to start of prev and adjust next ends accordingly
-        prev selection changes:
 
 
+# def - simple insert is no range insert. ie sc 3 ec 3 same lines, can be longer than 1 char
+# def - selection insert or del that is replacing already existing text
 
+# note - all deletions are replacements (selection changes)
 
 # Algo
 # recall selection does not include strict pastes
