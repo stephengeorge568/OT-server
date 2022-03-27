@@ -1,7 +1,7 @@
 Different scenarios: # granted prev is before next
         prev insertions:
                 if prev has new lines:
-                    next.sl&el += # of new lines in prev.text
+                        next.sl&el += # of new lines in prev.text
 
                 if prev.el == next.sl
                         next.sc = next.sc - prev.length after last \n
@@ -11,10 +11,17 @@ Different scenarios: # granted prev is before next
                         next.ec = next.ec - prev.length after last \n
 
         prev selection changes (replace/deletion):
-                if prev range contains next
-                        shift next to start of prev and adjust next ends accordingly
+                if prev.length > 0: # replace
 
 
+                else: # deletion
+
+                if prev range contains next:
+                        next.* = after prev new value. commonly replaces characters must be accounted for
+
+
+
+# if next range inside prev range at all, consider next to be AFTER prev and common deletion can be discounted
 # def - simple insert is no range insert. ie sc 3 ec 3 same lines, can be longer than 1 char
 # def - selection insert or del that is replacing already existing text
 
