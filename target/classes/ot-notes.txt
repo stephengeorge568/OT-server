@@ -27,6 +27,39 @@ If prev is exclusively after next than next wont change
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 new lines:
     abcdef
 
@@ -76,4 +109,36 @@ conflicting ranges:
 when prev starts after next end on same line:
 if next is a simple insert, then next.ec is illegal and cannot be prev.sc
 if next is not simple insert and instead a replace, next.ec can be used as prev.sc
+
+
+OT RULES -------------------------------------------------------------------
+        // just build a list of rules that we can confirm.
+
+        // in regards to insert after insert with \n's in prev. This only affects column # if
+        // they are on the same line. then, consider how many characters after last \n
+        // and before next.text. Thats how many chars to shift column #s
+
+        Integer newSC;
+        Integer newEC;
+        Integer newSL;
+        Integer newEL;
+        // INSERT after INSERT considering \n
+//        if (prev.getRange().getStartLineNumber() <= next.getRange().getStartLineNumber() &&
+//            prev.getRange().getEndLineNumber() <= next.getRange().getStartLineNumber() &&)
+
+        int countOfNewLines = 0;
+        Matcher m = Pattern.compile("(\\r\\n)|(\\n)|(\\r)").matcher(prev.getText());
+        while (m.find())
+            countOfNewLines ++; // sl & el will have this added to them
+        newSL = next.getRange().getStartLineNumber() + countOfNewLines + 1;
+        newEL = next.getRange().getEndLineNumber() + countOfNewLines + 1;
+
+        // if this > 0, sc ec will be diff bc of it also
+        if (countOfNewLines > 0) {
+
+        }
+
+
+;
+
 

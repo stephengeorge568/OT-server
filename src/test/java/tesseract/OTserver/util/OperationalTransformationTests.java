@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import tesseract.OTserver.objects.MonacoRange;
-import tesseract.OTserver.objects.StringChangeRequest;
 
 @SpringBootTest
 public class OperationalTransformationTests {
@@ -61,6 +60,20 @@ public class OperationalTransformationTests {
     void isPreviousRequestRelevent_assertTrue_PrevECConsideredBecauseSimpleInsert() {
         MonacoRange prev = new MonacoRange(2,2,1,1);
         MonacoRange next = new MonacoRange(2,2,1,1);
+        assertEquals(true, OperationalTransformation.isPreviousRequestRelevent(prev, next));
+    }
+
+    @Test
+    void isPreviousRequestRelevent_assertTrue_NextRangeBeforePrevRangeOverlapSelection() {
+        MonacoRange next = new MonacoRange(2,6,1,1);
+        MonacoRange prev = new MonacoRange(4,9,1,1);
+        assertEquals(true, OperationalTransformation.isPreviousRequestRelevent(prev, next));
+    }
+
+    @Test
+    void isPreviousRequestRelevent_assertTrue_NextPrevSameSelection() {
+        MonacoRange next = new MonacoRange(2,6,1,1);
+        MonacoRange prev = new MonacoRange(2,6,1,1);
         assertEquals(true, OperationalTransformation.isPreviousRequestRelevent(prev, next));
     }
 
