@@ -3,7 +3,7 @@ Different scenarios: # granted prev is before next
                 if prev has new lines:
                         next.sl&el += # of new lines in prev.text
 
-                if prev.el == next.sl
+                if prev.sl == next.el
                         next.sc = next.sc - prev.length after last \n
 
                 if prev.el == next.el
@@ -12,12 +12,26 @@ Different scenarios: # granted prev is before next
 
         prev selection changes (replace/deletion):
                 if prev.length > 0: # replace
+                        #ofNewLinesRemoved = prev.el - prev.sl
+                        netNewLineChange = #ofNewLinesInPrevText - #ofNewLinesRemoved
 
+                        next.*l += netNewLineChange          # this might need to be after below parts or diff obj
+
+                        if prev.text.contains('\n'):
+                                if prev.sl == next.el
+                                        next.sc = (next.sc - prev.ec) + prev.length after last \n
+                                if prev.el == next.el
+                                        next.ec = (next.ec - prev.ec) + prev.length after last \n
+                        else:
+                                if prev.el == next.sl:
+                                        next.sc -= (prev.range.prevLineLength - prev.text.length)
+                                if prev.el == next.el:
+                                        next.ec -= (prev.range.prevLineLength - prev.text.length)
 
                 else: # deletion
 
                 if prev range contains next:
-                        next.* = after prev new value. commonly replaces characters must be accounted for
+                        next.* = after prev new value. commonly replaced characters must be accounted for
 
 
 
