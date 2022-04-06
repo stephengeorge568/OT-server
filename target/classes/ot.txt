@@ -19,7 +19,7 @@ Different scenarios: # granted prev is before next
                 next.*l += netNewLineChange          # this might need to be after below parts or diff obj
 
                 if prev.text.contains('\n'):
-                        if prev.sl == next.el
+                        if prev.el == next.sl
                                 next.sc = (next.sc - prev.ec) + prev.length after last \n
                         if prev.el == next.el
                                 next.ec = (next.ec - prev.ec) + prev.length after last \n

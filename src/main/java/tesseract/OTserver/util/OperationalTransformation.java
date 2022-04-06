@@ -50,14 +50,67 @@ public class OperationalTransformation {
             TODO adjust for deletion of preceeding stuff to include newlines
             TODO conflicting ranges, might be diff for insert/remove/combinations etc
      */
-    private static StringChangeRequest transformOperation(StringChangeRequest prev, StringChangeRequest next) {
+    public static StringChangeRequest transformOperation(StringChangeRequest prev, StringChangeRequest next) {
+
+        int newSC = next.getRange().getStartColumn();
+        int newEC = next.getRange().getEndColumn();
+        int newSL = next.getRange().getStartLineNumber();
+        int newEL = next.getRange().getEndLineNumber();
+        int numberOfNewLinesInPrev = (int) prev.getText().lines().count() - 1;
 
         if (isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
 
-            // return a new StringChangeRequest
+            // # of new lines removed
+            int netNewLineNumberChange = numberOfNewLinesInPrev
+                    - (prev.getRange().getEndLineNumber() - prev.getRange().getStartLineNumber());
+
+            if (isRangeOverlap(prev.getRange(), next.getRange())) {
+                // adjust next accordingly, i.e remove commonly replaced ranges
+            }
+
+
+
+            newSL += netNewLineNumberChange;
+            newEL += netNewLineNumberChange;
         }
 
+        next.getRange().setEndColumn(newEC);
+        next.getRange().setStartColumn(newSC);
+        next.getRange().setStartLineNumber(newSL);
+        next.getRange().setEndLineNumber(newEL);
         return next;
+    }
+
+    // TODO test and cleanup
+    public static boolean isRangeOverlap(MonacoRange prev, MonacoRange next) {
+
+        next.getEndLineNumber() == prev.getStartLineNumber()
+
+
+        boolean isNextStartLineNumberBetweenPrevLineNumbers = next.getStartLineNumber() > prev.getStartLineNumber()
+                && next.getStartLineNumber() < prev.getEndLineNumber();
+        boolean isNextEndLineNumberBetweenPrevLineNumbers = next.getEndLineNumber() < prev.getEndLineNumber()
+                && next.getEndLineNumber() > prev.getStartLineNumber();
+
+
+        if (isNextStartLineNumberBetweenPrevLineNumbers || isNextEndLineNumberBetweenPrevLineNumbers) {
+            return true;
+        }
+
+        if (next.getStartLineNumber() == prev.getStartLineNumber()
+                && next.getStartColumn() >= prev.getStartColumn()
+                && next.)
+
+
+        if (next.getStartLineNumber() == prev.getStartLineNumber()) {
+            return next.getStartColumn() >= prev.getStartColumn();
+        } if (next.getStartLineNumber() == prev.getEndLineNumber()) {
+            return next.getStartColumn() < prev.getEndColumn();
+        } if (next.getEndLineNumber() == prev.getStartLineNumber()) {
+            return next.getEndColumn() > prev.getStartColumn();
+        } if (next.getEndLineNumber() == prev.getEndLineNumber()) {
+            return next.getEndColumn() <= prev.getEndColumn();
+        }
     }
 
     // Default is true. Finds conditions under which prev does not affect next and can be ignored
@@ -81,5 +134,28 @@ public class OperationalTransformation {
         }
         return true;
     }
+
+    private static boolean isSCWithinRange(MonacoRange n, MonacoRange p) {
+        if (n.getStartLineNumber() > p.getStartLineNumber()
+                && n.getStartLineNumber() < p.getEndLineNumber()) return true;
+
+        if (n.getStartLineNumber() == p.getStartLineNumber()) {
+            if (n.getStartLineNumber() == p.getEndLineNumber()) {
+                if (!(n.getStartColumn() < p.getEndColumn())) return false;
+            } if (n.getStartColumn() >= p.getStartColumn()) return true;
+        }
+
+        if (n.getStartLineNumber() == p.getEndLineNumber()) {
+            if (n.getStartColumn() < p.getEndColumn()) return true;
+        }
+
+        return false;
+    }
+
+    private static boolean isECWithinRange(MonacoRange n, MonacoRange p) {
+
+    }
+
+
 
 }

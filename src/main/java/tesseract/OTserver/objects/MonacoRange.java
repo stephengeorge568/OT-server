@@ -46,5 +46,11 @@ public class MonacoRange {
         this.startLineNumber = startLineNumber;
     }
 
+    public boolean isEqual(MonacoRange range) {
+        return this.getStartColumn() == range.getStartColumn() &&
+                this.getEndColumn() == range.getEndColumn() &&
+                this.getStartLineNumber() == range.getStartLineNumber() &&
+                this.getEndLineNumber() == range.getEndLineNumber();
+    }
 
 }

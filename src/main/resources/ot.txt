@@ -105,3 +105,57 @@ el: 2
 
 
 
+
+rangeOverlap:
+
+    |----------| P              & vice versa
+        |--------------| N
+
+sl&el same line: *c has to be checked for both bounds
+else: *c only checked for one bound
+// ** BELOW: could use switch case. would be more readable...
+//i.e case n.sl == p.sl but n.sl != p.sl..... and vice versa and both true
+
+    isNextSCWithinPrevRange:
+        if (n.sl > p.sl && n.sl < p.el) -> true
+        //otherwise n.sl must be equal to p.sl | p.el...
+
+        if (n.sl == p.sl):
+            //if p.sl == p.el then ec must also be checked
+            if (n.sl == p.el):
+                if (!n.sc < p.ec):
+                    return false
+            if (n.sc >= p.sc) return true
+
+        if (n.sl == p.el):                          // no check for other because its accounted for above
+            if (n.sc < p.ec) return true
+
+        return false                                // default case
+
+    isNextECWithinPrevRange:
+        if (n.el < p.el && n.el > p.sl) -> true
+
+        if (n.el == n.el):
+            if (n.el == p.sl):
+            if (n.ec <
+    isPrevSCWithinNextRange:
+
+    isPrevECWithinNextRange:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
