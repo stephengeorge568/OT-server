@@ -58,13 +58,13 @@ public class OperationalTransformation {
         int newEL = next.getRange().getEndLineNumber();
         int numberOfNewLinesInPrev = (int) prev.getText().lines().count() - 1;
 
-        if (isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
+        if (MonacoRangeUtil.isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
 
             // # of new lines removed
             int netNewLineNumberChange = numberOfNewLinesInPrev
                     - (prev.getRange().getEndLineNumber() - prev.getRange().getStartLineNumber());
 
-            if (isRangeOverlap(prev.getRange(), next.getRange())) {
+            if (MonacoRangeUtil.isRangeOverlap(prev.getRange(), next.getRange())) {
                 // adjust next accordingly, i.e remove commonly replaced ranges
             }
 
@@ -81,80 +81,11 @@ public class OperationalTransformation {
         return next;
     }
 
-    // TODO test and cleanup
-    public static boolean isRangeOverlap(MonacoRange prev, MonacoRange next) {
-
-        next.getEndLineNumber() == prev.getStartLineNumber()
 
 
-        boolean isNextStartLineNumberBetweenPrevLineNumbers = next.getStartLineNumber() > prev.getStartLineNumber()
-                && next.getStartLineNumber() < prev.getEndLineNumber();
-        boolean isNextEndLineNumberBetweenPrevLineNumbers = next.getEndLineNumber() < prev.getEndLineNumber()
-                && next.getEndLineNumber() > prev.getStartLineNumber();
 
 
-        if (isNextStartLineNumberBetweenPrevLineNumbers || isNextEndLineNumberBetweenPrevLineNumbers) {
-            return true;
-        }
 
-        if (next.getStartLineNumber() == prev.getStartLineNumber()
-                && next.getStartColumn() >= prev.getStartColumn()
-                && next.)
-
-
-        if (next.getStartLineNumber() == prev.getStartLineNumber()) {
-            return next.getStartColumn() >= prev.getStartColumn();
-        } if (next.getStartLineNumber() == prev.getEndLineNumber()) {
-            return next.getStartColumn() < prev.getEndColumn();
-        } if (next.getEndLineNumber() == prev.getStartLineNumber()) {
-            return next.getEndColumn() > prev.getStartColumn();
-        } if (next.getEndLineNumber() == prev.getEndLineNumber()) {
-            return next.getEndColumn() <= prev.getEndColumn();
-        }
-    }
-
-    // Default is true. Finds conditions under which prev does not affect next and can be ignored
-    public static boolean isPreviousRequestRelevent(MonacoRange prev, MonacoRange next) {
-
-        boolean isNextSimpleInsert = next.getStartLineNumber() - next.getEndLineNumber() == 0
-                && next.getStartColumn() - next.getEndColumn() == 0;
-        boolean isPrevStartLineAfterNextEndLine = prev.getStartLineNumber() > next.getEndLineNumber();
-        boolean isSameLine = prev.getStartLineNumber() == next.getEndLineNumber();
-
-        if (isPrevStartLineAfterNextEndLine) return false; // if prev is on bigger line # than next - ignore
-        if (isSameLine) { // if prev starts on same line that next ends
-            // if next is simple insert, then next.ec cannot be prev.sc
-            if(isNextSimpleInsert) {
-                // next.ec must be less than prev.sc
-                if (next.getEndColumn() < prev.getStartColumn()) return false;
-            } else {
-                // next.ec must be less or equal
-                if (next.getEndColumn() <= prev.getStartColumn()) return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean isSCWithinRange(MonacoRange n, MonacoRange p) {
-        if (n.getStartLineNumber() > p.getStartLineNumber()
-                && n.getStartLineNumber() < p.getEndLineNumber()) return true;
-
-        if (n.getStartLineNumber() == p.getStartLineNumber()) {
-            if (n.getStartLineNumber() == p.getEndLineNumber()) {
-                if (!(n.getStartColumn() < p.getEndColumn())) return false;
-            } if (n.getStartColumn() >= p.getStartColumn()) return true;
-        }
-
-        if (n.getStartLineNumber() == p.getEndLineNumber()) {
-            if (n.getStartColumn() < p.getEndColumn()) return true;
-        }
-
-        return false;
-    }
-
-    private static boolean isECWithinRange(MonacoRange n, MonacoRange p) {
-
-    }
 
 
 
