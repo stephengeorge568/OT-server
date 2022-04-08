@@ -15,6 +15,19 @@ public class StringChangeRequest {
 
     public StringChangeRequest() {}
 
+    // Deep copy constructor
+    public StringChangeRequest(StringChangeRequest other) {
+        this.text = other.text;
+        this.timestamp = other.timestamp;
+        this.identity = other.identity;
+        this.range = new MonacoRange(
+                other.getRange().getStartColumn(),
+                other.getRange().getEndColumn(),
+                other.getRange().getStartLineNumber(),
+                other.getRange().getEndLineNumber());
+        this.revID = other.getRevID();
+    }
+
     public Long getRevID() {
         return revID;
     }
@@ -50,6 +63,8 @@ public class StringChangeRequest {
         this.identity = identity;
         return this;
     }
+
+
 
     public MonacoRange getRange() {
         return range;

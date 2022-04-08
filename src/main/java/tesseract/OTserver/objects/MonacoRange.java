@@ -53,4 +53,9 @@ public class MonacoRange {
                 this.getEndLineNumber() == range.getEndLineNumber();
     }
 
+    @Override
+    public String toString() {
+        return String.format("SC: %d\nEC: %d\nSL: %d\nEL: %d\n", startColumn, endColumn, startLineNumber, endLineNumber);
+    }
+
 }

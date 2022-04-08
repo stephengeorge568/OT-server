@@ -12,20 +12,29 @@ public class OperationalTransformation {
 
     // TODO just make this a bean or a service idk whcih is more epxected
 
-    public static StringChangeRequest transformThisBitch(StringChangeRequest request,
+    public static ArrayList<StringChangeRequest> transform(StringChangeRequest request,
                                                          HashMap<Long, ArrayList<StringChangeRequest>> history) {
-
+        ArrayList<StringChangeRequest> transformedRequests = new ArrayList<>(2);
         // gather all the previous requests that will affect this one
         // update request to account for relevant historical requests
         for (StringChangeRequest historicalRequest : getAffectingRequests(request.getRevID(), history)) {
             // May need to do request = transformOper... TODO
-            transformOperation(historicalRequest, request);
-        }
 
+            StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, request);
+
+            transformedRequests.add(transformOperation(historicalRequest, pair[0]));
+            if (pair[1] != null) transformedRequests.add(transformOperation(historicalRequest, pair[1]));
+
+
+
+        }
+        if (transformedRequests.isEmpty()) {
+            transformedRequests.add(request);
+        }
         // might need to update revID to something IDk think about this later
 
         // return the new request
-        return request;
+        return transformedRequests;
     }
 
     // returns list of changes with revIDs after given revID. List is ordered by revID in ascending order...
@@ -49,6 +58,8 @@ public class OperationalTransformation {
             replacing on same line alters columns
             TODO adjust for deletion of preceeding stuff to include newlines
             TODO conflicting ranges, might be diff for insert/remove/combinations etc
+
+            MIGHT need to return list of SCRs
      */
     public static StringChangeRequest transformOperation(StringChangeRequest prev, StringChangeRequest next) {
 
@@ -64,9 +75,6 @@ public class OperationalTransformation {
             int netNewLineNumberChange = numberOfNewLinesInPrev
                     - (prev.getRange().getEndLineNumber() - prev.getRange().getStartLineNumber());
 
-            if (MonacoRangeUtil.isRangeOverlap(prev.getRange(), next.getRange())) {
-                // adjust next accordingly, i.e remove commonly replaced ranges
-            }
 
 
 
@@ -74,6 +82,7 @@ public class OperationalTransformation {
             newEL += netNewLineNumberChange;
         }
 
+        // next.setRange() probably more appropriate. Might need to be tested though
         next.getRange().setEndColumn(newEC);
         next.getRange().setStartColumn(newSC);
         next.getRange().setStartLineNumber(newSL);

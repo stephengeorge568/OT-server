@@ -78,8 +78,7 @@ public class MonacoRangeUtilTests {
         assertEquals(true, MonacoRangeUtil.isPreviousRequestRelevent(prev, next));
     }
 
-    /*------------------------------------------------------------------------------*/
-
+    /* ------------------------------------------------------------------------------------------------------------- */
 
     /*
     N |-----|
@@ -212,6 +211,135 @@ public class MonacoRangeUtilTests {
         MonacoRange prev = new MonacoRange(4,9,6,9);
         MonacoRange next = new MonacoRange(1,4,1,2);
         assertEquals(false, MonacoRangeUtil.isRangeOverlap(prev, next));
+    }
+
+    /* ------------------------------------------------------------------------------------------------------------- */
+
+    /*
+    N |---------|
+    P        |-----|
+        turns into
+    N |------|
+    P        |-----|
+     */
+    @Test
+    void resolveConflictingRanges_NextEndWithinPrevRange() {
+        StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(1,5,1,1));
+        StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,8,1,1));
+
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+        //System.out.println(requests[0].getRange().toString());
+        assertEquals(true, requests[1] == null);
+        assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(1,3,1,1)));
+    }
+
+    /*
+    N     |-----|
+    P |-----|
+        turns into
+    N       |---|
+    P |-----|
+     */
+    @Test
+    void resolveConflictingRanges_NextStartWithinPrevRange() {
+        StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(6,12,1,1));
+        StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,8,1,1));
+
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+
+        assertEquals(true, requests[1] == null);
+        assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(8,12,1,1)));
+    }
+
+    /*
+    N |-----|
+    P |-----|
+        turns into
+    N       |
+    P |-----|
+     */
+    @Test
+    void resolveConflictingRanges_SameRange() {
+        StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(3,8,1,1));
+        StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,8,1,1));
+
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+
+        assertEquals(true, requests[1] == null);
+        assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(8,8,1,1)));
+    }
+
+    /*
+    N   |-----|
+    P |---------|
+        turns into
+    N           |
+    P |---------|
+     */
+    @Test
+    void resolveConflictingRanges_NextContainedInsidePrev() {
+        StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(3,6,1,1));
+        StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(1,8,1,1));
+
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+
+        assertEquals(true, requests[1] == null);
+        assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(8,8,1,1)));
+    }
+
+    /*
+    N |---------|
+    P   |-----|
+        turns into
+    N |-|     |-|
+    P   |-----|
+     */
+    @Test
+    void resolveConflictingRanges_PrevContainedInsideNext2Requests() {
+        StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(1,8,1,1));
+        StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,6,1,1));
+
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+
+        assertEquals(true, requests[1] != null);
+        assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(1,3,1,1)));
+        assertEquals(true, requests[1].getRange().isEqual(new MonacoRange(6,8,1,1)));
+    }
+
+    /*
+    N |---------|
+    P        |-----|
+        turns into
+    N |------|
+    P        |-----|
+     */
+    @Test
+    void resolveConflictingRanges_NextEndWithinPrevRange_Multiline() {
+        StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(1,5,1,2));
+        StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(2,6,2,3));
+
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+        //System.out.println(requests[0].getRange().toString());
+        assertEquals(true, requests[1] == null);
+        assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(1,2,1,2)));
+    }
+
+    /*
+    N     |-----|
+    P |-----|
+        turns into
+    N       |---|
+    P |-----|
+     */
+    @Test
+    void resolveConflictingRanges_NextStartWithinPrevRange_Multiline() {
+        StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(6,12,2,2));
+        StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,8,1,2));
+
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+
+        assertEquals(true, requests[1] == null);
+        assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(8,12,2,2)));
     }
 
 

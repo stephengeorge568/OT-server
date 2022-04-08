@@ -7,6 +7,8 @@ import tesseract.OTserver.objects.Document;
 import tesseract.OTserver.objects.StringChangeRequest;
 import tesseract.OTserver.util.OperationalTransformation;
 
+import java.util.ArrayList;
+
 @Service
 public class DocumentService {
 
@@ -36,15 +38,15 @@ public class DocumentService {
         // do operations
         // this will return a new StringChangeRequest. this will change below.
 
-        StringChangeRequest newChangeRequest = OperationalTransformation.transformThisBitch(request, this.currentDocument.getChangeHistory());
+        ArrayList<StringChangeRequest> newChangeRequests = OperationalTransformation.transform(request, this.currentDocument.getChangeHistory());
 
         // put request in history. remove request from queue.
         // THIS REV ID MIGHT BE SOMETHING ELSE IDK THINK ABOUT THIS LATER
-        this.currentDocument.getChangeHistory().get(newChangeRequest.getRevID()).add(newChangeRequest);
+        for (StringChangeRequest changedRequest : newChangeRequests) {
+            this.currentDocument.getChangeHistory().get(changedRequest.getRevID()).add(changedRequest);
+            this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
+        }
         this.currentDocument.getPendingChangesQueue().remove();
-
-        // send to change to other clients
-        this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", request);
 
         // once propogated to other clients, return new revID
         // This is a placeholder
