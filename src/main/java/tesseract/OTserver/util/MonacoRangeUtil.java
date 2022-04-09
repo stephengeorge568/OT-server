@@ -30,8 +30,6 @@ public class MonacoRangeUtil {
     }
 
     public static boolean isRangeOverlap(MonacoRange prev, MonacoRange next) {
-
-
         System.out.printf("isSCWithinRange(next, prev): %s\nisSCWithinRange(prev, next): %s" +
                 "\nisECWithinRange(next, prev): %s\nisECWithinRange(prev, next): %s\n",
                 isSCWithinRange(next, prev),isSCWithinRange(prev, next),isECWithinRange(next, prev),isECWithinRange(prev, next));

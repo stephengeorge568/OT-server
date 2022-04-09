@@ -46,28 +46,20 @@ public class OperationalTransformation {
         } return relevantRequests;
     }
 
-    /*
-        If prev is exclusively after next than next wont change
-        no new line, no intersect, on same line
-            next sc = next.sc - (prev.ec - prev.sc) - prev.text.length // (same for next ec)
-
-       when does stuff chagne:
-            TODO prev is before next
-            TODO theres new lines on prior lines
-            TODO theres new line on same line as next
-            replacing on same line alters columns
-            TODO adjust for deletion of preceeding stuff to include newlines
-            TODO conflicting ranges, might be diff for insert/remove/combinations etc
-
-            MIGHT need to return list of SCRs
-     */
     public static StringChangeRequest transformOperation(StringChangeRequest prev, StringChangeRequest next) {
 
         int newSC = next.getRange().getStartColumn();
         int newEC = next.getRange().getEndColumn();
         int newSL = next.getRange().getStartLineNumber();
         int newEL = next.getRange().getEndLineNumber();
-        int numberOfNewLinesInPrev = (int) prev.getText().lines().count() - 1;
+        int numberOfNewLinesInPrev = (int) prev.getText().chars().filter(x -> x == '\n').count();
+
+        // TODO account for \t being considered only 1 length. Java may already do this. It does for \n
+        int prevTextLengthAfterLastNewLine = prev.getText().length();
+
+        if (numberOfNewLinesInPrev > 0) {
+            prevTextLengthAfterLastNewLine = prev.getText().length() - prev.getText().lastIndexOf("\n") - 1;
+        }
 
         if (MonacoRangeUtil.isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
 
@@ -75,7 +67,39 @@ public class OperationalTransformation {
             int netNewLineNumberChange = numberOfNewLinesInPrev
                     - (prev.getRange().getEndLineNumber() - prev.getRange().getStartLineNumber());
 
+            boolean isPrevSimpleInsert = prev.getRange().getStartColumn() == prev.getRange().getEndColumn()
+                    && prev.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber();
 
+            if (isPrevSimpleInsert) {
+                if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+                    newSC = newSC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
+                } if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+                    newEC = newEC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
+                }
+            } else {
+
+            }
+
+
+//            if (numberOfNewLinesInPrev > 0) {
+//                if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+//                    newSC = (newSC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine;
+//                } if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+//                    newEC = (newEC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine;
+//                }
+//            } else {
+//                if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+//                    // newSC -= [ how many chars deleted on that line ] + prev.text.length
+//                    int numberOfCharsDeletedOnPrevLine = 0;
+//                    if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+//                        if (prev.getRange().getEndColumn() != prev.getRange().getStartColumn())
+//                            numberOfCharsDeletedOnPrevLine = prev.getRange().getEndColumn()
+//                                - prev.getRange().getStartColumn();
+//                        newEC -= numberOfCharsDeletedOnPrevLine - prev.getText().length();
+//                    }
+//                    newSC -= numberOfCharsDeletedOnPrevLine - prev.getText().length();
+//                }
+//            }
 
 
             newSL += netNewLineNumberChange;
@@ -90,7 +114,23 @@ public class OperationalTransformation {
         return next;
     }
 
+/*
 
+next.sc = ([prev.text.length -> prevTextLengthAfterLastNewLine] - [how many chars being replaced])
+
+ next.*l += netNewLineChange          # this might need to be after below parts or diff obj
+
+                if prev.text.contains('\n'):
+                        if prev.el == next.sl
+                                next.sc = (next.sc - prev.ec) + prev.length after last \n
+                        if prev.el == next.el
+                                next.ec = (next.ec - prev.ec) + prev.length after last \n
+                else:
+                        if prev.el == next.sl:
+                                next.sc -= (prev.range.prevLineLength - prev.text.length)
+                        if prev.el == next.el:
+                                next.ec -= (prev.range.prevLineLength - prev.text.length)
+ */
 
 
 

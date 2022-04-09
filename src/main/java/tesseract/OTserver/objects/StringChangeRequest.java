@@ -76,7 +76,7 @@ public class StringChangeRequest {
 
 
     public boolean isEqual(StringChangeRequest req) {
-        return req.getRange().isEqual(req.getRange())
+        return this.getRange().isEqual(req.getRange())
                 && this.text == req.getText();
     }
 }
