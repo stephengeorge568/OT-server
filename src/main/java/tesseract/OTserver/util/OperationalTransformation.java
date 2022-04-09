@@ -77,30 +77,26 @@ public class OperationalTransformation {
                     newEC = newEC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
                 }
             } else {
+                if (numberOfNewLinesInPrev > 0) {
+                    if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+                        newSC = (newSC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine + 1; // do i need +1?
+                    }
+                    if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+                        newEC = (newEC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine + 1;
+                    }
+                } else {
+                    int numberOfCharsDeletedOnPrevLine = prev.getRange().getEndColumn()
+                                - prev.getRange().getStartColumn();
+                    if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+                        // newSC = newSC - [# chars deleted] + text.length
+                        newSC = newSC - numberOfCharsDeletedOnPrevLine + prev.getText().length();
+                    }
+                    if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+                        newEC = newEC - numberOfCharsDeletedOnPrevLine + prev.getText().length();
+                    }
 
+                }
             }
-
-
-//            if (numberOfNewLinesInPrev > 0) {
-//                if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
-//                    newSC = (newSC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine;
-//                } if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
-//                    newEC = (newEC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine;
-//                }
-//            } else {
-//                if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
-//                    // newSC -= [ how many chars deleted on that line ] + prev.text.length
-//                    int numberOfCharsDeletedOnPrevLine = 0;
-//                    if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
-//                        if (prev.getRange().getEndColumn() != prev.getRange().getStartColumn())
-//                            numberOfCharsDeletedOnPrevLine = prev.getRange().getEndColumn()
-//                                - prev.getRange().getStartColumn();
-//                        newEC -= numberOfCharsDeletedOnPrevLine - prev.getText().length();
-//                    }
-//                    newSC -= numberOfCharsDeletedOnPrevLine - prev.getText().length();
-//                }
-//            }
-
 
             newSL += netNewLineNumberChange;
             newEL += netNewLineNumberChange;
@@ -113,29 +109,5 @@ public class OperationalTransformation {
         next.getRange().setEndLineNumber(newEL);
         return next;
     }
-
-/*
-
-next.sc = ([prev.text.length -> prevTextLengthAfterLastNewLine] - [how many chars being replaced])
-
- next.*l += netNewLineChange          # this might need to be after below parts or diff obj
-
-                if prev.text.contains('\n'):
-                        if prev.el == next.sl
-                                next.sc = (next.sc - prev.ec) + prev.length after last \n
-                        if prev.el == next.el
-                                next.ec = (next.ec - prev.ec) + prev.length after last \n
-                else:
-                        if prev.el == next.sl:
-                                next.sc -= (prev.range.prevLineLength - prev.text.length)
-                        if prev.el == next.el:
-                                next.ec -= (prev.range.prevLineLength - prev.text.length)
- */
-
-
-
-
-
-
 
 }

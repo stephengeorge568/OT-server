@@ -65,6 +65,26 @@ public class OperationalTransformationTests {
         assertEquals(true, expe.isEqual(tran));
     }
 
+    /*
+    N           |-----|
+    P |-----|               p.text=""
+        turns into
+    N    |-----|
+    P
+     */
+    @Test
+    void transformOperation_SelectionDelete() {
+        StringChangeRequest prev = new StringChangeRequest("", new MonacoRange(2,5,1,1 ));
+        StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(7,9, 1, 1));
+        StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(4,9, 1, 1));
+        StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(4,6,1,1));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev,next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+
     @Test
     void transformOperation_ShiftRightNewLines2() {
         StringChangeRequest prev = new StringChangeRequest("\n", new MonacoRange(2,2,1,1 ));
@@ -72,6 +92,104 @@ public class OperationalTransformationTests {
         StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(6,6, 1, 1));
         StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(5,5,2,2));
         StringChangeRequest tran = OperationalTransformation.transformOperation(prev,next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    /*
+    N           |-----|
+    P |-----|               p.text="abc"
+        turns into
+    N           |-----|
+    P |-----|               abc same length as being deleted. stays same
+     */
+    @Test
+    void transformOperation_SelectionReplaceSameNoNewLine() {
+        StringChangeRequest prev = new StringChangeRequest("abc", new MonacoRange(2,5,1,1 ));
+        StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(9,12, 1, 1));
+        StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(9,12, 1, 1));
+        StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(9,12,1,1));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev,next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    /*
+    N           |-----|
+    P |-----|               p.text="abcdef"
+        turns into
+    N              |-----|
+    P |-----|
+     */
+    @Test
+    void transformOperation_SelectionReplaceNoNewLine() {
+        StringChangeRequest prev = new StringChangeRequest("abcdef", new MonacoRange(2,5,1,1 ));
+        StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(9,12, 1, 1));
+        StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(9,12, 1, 1));
+        StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(12,15,1,1));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev,next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    @Test
+    void transformOperation_SelectionReplaceNewLines() {
+        StringChangeRequest prev = new StringChangeRequest("abc\n", new MonacoRange(2,5,1,1 ));
+        StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(9,12, 1, 1));
+        StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(9,12, 1, 1));
+        StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(5,8,2,2));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev,next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    @Test
+    void transformOperation_SelectionReplaceNewLinesTextAfterNewLine() {
+        StringChangeRequest prev = new StringChangeRequest("abc\ndefg", new MonacoRange(1, 4, 1, 1 ));
+        StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(6, 12, 1, 1));
+        StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(6, 12, 1, 1));
+        StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(7, 13, 2, 2));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev, next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    @Test
+    void transformOperation_SelectionDiffLinesNoNewLineRemoved() {
+        StringChangeRequest prev = new StringChangeRequest("abc\ndefg", new MonacoRange(1, 4, 1, 1 ));
+        StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(6, 12, 2, 2));
+        StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(6, 12, 2, 2));
+        StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(6, 12, 3, 3));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev, next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    @Test
+    void transformOperation_DeletionDiffLinesNewLineRemoved() {
+        StringChangeRequest prev = new StringChangeRequest("", new MonacoRange(3, 4, 1, 2 ));
+        StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(6, 12, 2, 2));
+        StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(6, 12, 2, 2));
+        StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(5, 11, 1, 1));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev, next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    @Test
+    void transformOperation_DeletionDiffLinesNewLineRemovedTextAdded() {
+        StringChangeRequest prev = new StringChangeRequest("qtf", new MonacoRange(3, 4, 1, 2 ));
+        StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(6, 12, 2, 2));
+        StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(6, 12, 2, 2));
+        StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(8, 14, 1, 1));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev, next);
 
         printTransOpTest(prev, nextCopy, tran, expe);
         assertEquals(true, expe.isEqual(tran));
