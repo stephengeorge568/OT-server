@@ -1,12 +1,8 @@
 package tesseract.OTserver.util;
 
-import tesseract.OTserver.objects.MonacoRange;
 import tesseract.OTserver.objects.StringChangeRequest;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class OperationalTransformation {
 
@@ -15,25 +11,17 @@ public class OperationalTransformation {
     public static ArrayList<StringChangeRequest> transform(StringChangeRequest request,
                                                          HashMap<Long, ArrayList<StringChangeRequest>> history) {
         ArrayList<StringChangeRequest> transformedRequests = new ArrayList<>(2);
-        // gather all the previous requests that will affect this one
-        // update request to account for relevant historical requests
-        for (StringChangeRequest historicalRequest : getAffectingRequests(request.getRevID(), history)) {
-            // May need to do request = transformOper... TODO
 
+        for (StringChangeRequest historicalRequest : getAffectingRequests(request.getRevID(), history)) {
             StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, request);
 
             transformedRequests.add(transformOperation(historicalRequest, pair[0]));
             if (pair[1] != null) transformedRequests.add(transformOperation(historicalRequest, pair[1]));
-
-
-
         }
         if (transformedRequests.isEmpty()) {
             transformedRequests.add(request);
         }
-        // might need to update revID to something IDk think about this later
-
-        // return the new request
+        // TODO might need to update revID to something IDk think about this later
         return transformedRequests;
     }
 
@@ -54,7 +42,7 @@ public class OperationalTransformation {
         int newEL = next.getRange().getEndLineNumber();
         int numberOfNewLinesInPrev = (int) prev.getText().chars().filter(x -> x == '\n').count();
 
-        // TODO account for \t being considered only 1 length. Java may already do this. It does for \n
+        // TODO ensure \t and \n etc behave as 1 length char
         int prevTextLengthAfterLastNewLine = prev.getText().length();
 
         if (numberOfNewLinesInPrev > 0) {
@@ -63,7 +51,6 @@ public class OperationalTransformation {
 
         if (MonacoRangeUtil.isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
 
-            // # of new lines removed
             int netNewLineNumberChange = numberOfNewLinesInPrev
                     - (prev.getRange().getEndLineNumber() - prev.getRange().getStartLineNumber());
 
@@ -88,7 +75,6 @@ public class OperationalTransformation {
                     int numberOfCharsDeletedOnPrevLine = prev.getRange().getEndColumn()
                                 - prev.getRange().getStartColumn();
                     if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
-                        // newSC = newSC - [# chars deleted] + text.length
                         newSC = newSC - numberOfCharsDeletedOnPrevLine + prev.getText().length();
                     }
                     if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {

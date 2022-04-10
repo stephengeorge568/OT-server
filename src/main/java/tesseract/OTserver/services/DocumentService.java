@@ -5,6 +5,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import tesseract.OTserver.objects.Document;
 import tesseract.OTserver.objects.StringChangeRequest;
+import tesseract.OTserver.util.DocumentUtil;
 import tesseract.OTserver.util.OperationalTransformation;
 
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class DocumentService {
                     this.currentDocument.getChangeHistory().get(changedRequest.getRevID()).add(changedRequest);
                 else
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
+                // TODO update document model
+                this.currentDocument.setModel(DocumentUtil.updateModel(this.currentDocument.getModel(), changedRequest));
                 this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
             }
         }
