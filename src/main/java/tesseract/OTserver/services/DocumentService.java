@@ -8,6 +8,7 @@ import tesseract.OTserver.objects.StringChangeRequest;
 import tesseract.OTserver.util.OperationalTransformation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @Service
 public class DocumentService {
@@ -21,6 +22,7 @@ public class DocumentService {
     // For when depen inj is needed for service constructors
     public DocumentService() {
         this.currentDocument = new Document();
+        System.out.println("Document init");
     }
 
     // Thread.sleep is a temporary solution. This will need to be redesigned more than likely TODO
@@ -43,8 +45,13 @@ public class DocumentService {
         // put request in history. remove request from queue.
         // THIS REV ID MIGHT BE SOMETHING ELSE IDK THINK ABOUT THIS LATER
         for (StringChangeRequest changedRequest : newChangeRequests) {
-            this.currentDocument.getChangeHistory().get(changedRequest.getRevID()).add(changedRequest);
-            this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
+            if (changedRequest != null) {
+                if (this.currentDocument.getChangeHistory().get(changedRequest.getRevID()) != null)
+                    this.currentDocument.getChangeHistory().get(changedRequest.getRevID()).add(changedRequest);
+                else
+                    this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
+                this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
+            }
         }
         this.currentDocument.getPendingChangesQueue().remove();
 

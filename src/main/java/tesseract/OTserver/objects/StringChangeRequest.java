@@ -79,4 +79,15 @@ public class StringChangeRequest {
         return this.getRange().isEqual(req.getRange())
                 && this.text == req.getText();
     }
+
+    @Override
+    public String toString() {
+        return "StringChangeRequest{" +
+                "timestamp='" + timestamp + '\'' +
+                ", text='" + text + '\'' +
+                ", identity='" + identity + '\'' +
+                ", rangeSC=" + range.getStartColumn() +
+                ", revID=" + revID +
+                '}';
+    }
 }

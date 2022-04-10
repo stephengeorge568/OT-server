@@ -13,6 +13,9 @@ public class MonacoRange {
         this.endLineNumber = endLineNumber;
         this.startLineNumber = startLineNumber;
     }
+    public MonacoRange() {
+
+    }
 
     public Integer getEndColumn() {
         return endColumn;
