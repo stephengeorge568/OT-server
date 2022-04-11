@@ -53,6 +53,7 @@ public class DocumentService {
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
                 // TODO update document model
                 this.currentDocument.setModel(DocumentUtil.updateModel(this.currentDocument.getModel(), changedRequest));
+                System.out.println(this.currentDocument.getModel() + "\n-------------------------------------------------------------------------");
                 this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
             }
         }

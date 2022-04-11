@@ -23,6 +23,7 @@ public class StringChangeController {
     )
     @ResponseBody
     public ResponseEntity<Integer> stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
+        System.out.println("DEBUG: SCR recieved from " + request.getIdentity() + ", message: " + request.getText() + "\n");
         return ResponseEntity.ok(this.documentService.submitChange(request));
     }
 
