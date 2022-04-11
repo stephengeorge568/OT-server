@@ -6,7 +6,7 @@ public class Document {
 
     private DocumentLanguage language;
     private String model;
-    private Long revID;
+    private Integer revID;
     private HashMap<Long, ArrayList<StringChangeRequest>> changeHistory;
     private Queue<StringChangeRequest> pendingChangesQueue;
 
@@ -15,7 +15,7 @@ public class Document {
     public Document() {
         this.language = DocumentLanguage.JAVA;
         this.model = "";
-        this.revID = 1L;
+        this.revID = 1;
         this.changeHistory = new HashMap<>();
         this.pendingChangesQueue = new LinkedList<>();
     }
@@ -28,11 +28,11 @@ public class Document {
         this.model = model;
     }
 
-    public Long getRevID() {
+    public Integer getRevID() {
         return revID;
     }
 
-    public void setRevID(Long revID) {
+    public void setRevID(Integer revID) {
         this.revID = revID;
     }
 

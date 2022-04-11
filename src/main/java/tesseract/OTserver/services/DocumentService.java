@@ -23,9 +23,8 @@ public class DocumentService {
     // For when depen inj is needed for service constructors
     public DocumentService() {
         this.currentDocument = new Document();
-        System.out.println("Document init");
     }
-
+    // TODO reformat so easier to test
     // Thread.sleep is a temporary solution. This will need to be redesigned more than likely TODO
     public Integer submitChange(StringChangeRequest request) {
         // put change in pending changes queue
@@ -38,31 +37,33 @@ public class DocumentService {
                 e.printStackTrace();
             }
         }
-        // do operations
-        // this will return a new StringChangeRequest. this will change below.
 
         ArrayList<StringChangeRequest> newChangeRequests = OperationalTransformation.transform(request, this.currentDocument.getChangeHistory());
 
-        // put request in history. remove request from queue.
-        // THIS REV ID MIGHT BE SOMETHING ELSE IDK THINK ABOUT THIS LATER
+        this.currentDocument.setRevID(this.currentDocument.getRevID() + 1);
+
         for (StringChangeRequest changedRequest : newChangeRequests) {
             if (changedRequest != null) {
                 if (this.currentDocument.getChangeHistory().get(changedRequest.getRevID()) != null)
                     this.currentDocument.getChangeHistory().get(changedRequest.getRevID()).add(changedRequest);
                 else
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
-                // TODO update document model
                 this.currentDocument.setModel(DocumentUtil.updateModel(this.currentDocument.getModel(), changedRequest));
-                System.out.println(this.currentDocument.getModel() + "\n-------------------------------------------------------------------------");
+                System.out.println("\n-------------------------------------------------------------------------\n"
+                        + this.currentDocument.getModel()
+                        + "\n-------------------------------------------------------------------------");
+                System.out.printf("DEBUG: propogating:\n\tfrom: %s\n\tstr:\n\trevId:%d\n\n",
+                        changedRequest.getIdentity(),
+                        changedRequest.getText(),
+                        changedRequest.getRevID());
+                // TODO do i need to update changedRequest revID before propogation?
                 this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
             }
         }
+
         this.currentDocument.getPendingChangesQueue().remove();
 
-        // once propogated to other clients, return new revID
-        // This is a placeholder
-        int temp = 0;
-        return temp;
+        return this.currentDocument.getRevID();
     }
 
 

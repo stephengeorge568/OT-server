@@ -7,7 +7,6 @@ import java.util.HashMap;
 public class OperationalTransformation {
 
     // TODO just make this a bean or a service idk whcih is more epxected
-
     public static ArrayList<StringChangeRequest> transform(StringChangeRequest request,
                                                          HashMap<Long, ArrayList<StringChangeRequest>> history) {
         ArrayList<StringChangeRequest> transformedRequests = new ArrayList<>(2);
@@ -21,7 +20,6 @@ public class OperationalTransformation {
         if (transformedRequests.isEmpty()) {
             transformedRequests.add(request);
         }
-        // TODO might need to update revID to something IDk think about this later
         return transformedRequests;
     }
 
