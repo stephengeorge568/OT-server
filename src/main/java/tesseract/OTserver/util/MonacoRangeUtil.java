@@ -75,7 +75,7 @@ public class MonacoRangeUtil {
         return false;
     }
 
-    public static StringChangeRequest[] resolveConflictingRanges(StringChangeRequest next, StringChangeRequest prev) {
+    public static StringChangeRequest[] resolveConflictingRanges(StringChangeRequest prev, StringChangeRequest next) {
 
 
         /*

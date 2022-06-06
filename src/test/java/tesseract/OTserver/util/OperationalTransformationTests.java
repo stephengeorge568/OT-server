@@ -6,6 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import tesseract.OTserver.objects.MonacoRange;
 import tesseract.OTserver.objects.StringChangeRequest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 @SpringBootTest
 public class OperationalTransformationTests {
     // https://www.baeldung.com/junit-5
@@ -19,6 +22,18 @@ public class OperationalTransformationTests {
         StringChangeRequest next = new StringChangeRequest("ohno", new MonacoRange(3,6, 2, 2));
         StringChangeRequest nextCopy = new StringChangeRequest("ohno", new MonacoRange(3,6, 2, 2));
         StringChangeRequest expe = new StringChangeRequest("ohno", new MonacoRange(3,6,4,4));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev,next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    @Test
+    void transformOperation_TwoSimpleInsertsPrevBefore() {
+        StringChangeRequest prev = new StringChangeRequest("a", new MonacoRange(3,3,1,1 ));
+        StringChangeRequest next = new StringChangeRequest("b", new MonacoRange(6,6, 1, 1));
+        StringChangeRequest nextCopy = new StringChangeRequest("b", new MonacoRange(6,6, 1, 1));
+        StringChangeRequest expe = new StringChangeRequest("b", new MonacoRange(7,7,1,1));
         StringChangeRequest tran = OperationalTransformation.transformOperation(prev,next);
 
         printTransOpTest(prev, nextCopy, tran, expe);
@@ -195,6 +210,42 @@ public class OperationalTransformationTests {
         assertEquals(true, expe.isEqual(tran));
     }
 
+    @Test
+    void transform_OnlyFirstHistoryRelevant() {
+        StringChangeRequest request = new StringChangeRequest("a", new MonacoRange(5, 5, 1, 1 ), 1);
+        StringChangeRequest history1 = new StringChangeRequest("c", new MonacoRange(1, 1, 1, 1), 1);
+        StringChangeRequest history2 = new StringChangeRequest("q", new MonacoRange(3, 3, 1, 1), 1);
+
+        ArrayList<StringChangeRequest> historyList = new ArrayList<>();
+        historyList.add(history1);
+        historyList.add(history2);
+
+        HashMap<Integer, ArrayList<StringChangeRequest>> history = new HashMap<>();
+        history.put(1, historyList);
+        StringChangeRequest expe1 = new StringChangeRequest("a", new MonacoRange(7, 7, 1, 1), 1);
+        //StringChangeRequest expe2 = new StringChangeRequest(null);
+        ArrayList<StringChangeRequest> trans = OperationalTransformation.transform(request, history);
+
+        System.out.println("Transformed:\n" + trans.get(0).toString());
+        System.out.println("Expected:\n" + expe1.toString());
+
+        assertEquals(true, trans.get(0).isEqual(expe1));
+        //assertEquals(true, trans.get(1) == null);
+    }
+
+
+//    @Test
+//    void transformOperation_PrevInsideNextReplaceWithText() {
+//        StringChangeRequest prev = new StringChangeRequest("123", new MonacoRange(6, 2, 1, 2 ));
+//        StringChangeRequest next = new StringChangeRequest("abcdef", new MonacoRange(4, 4, 1, 2));
+//        StringChangeRequest nextCopy = new StringChangeRequest("abcdef", new MonacoRange(4, 4, 1, 2));
+//        StringChangeRequest expe = new StringChangeRequest("abcdef", new MonacoRange(4, 11, 1, 1));
+//        StringChangeRequest tran = OperationalTransformation.transformOperation(prev, next);
+//
+//        printTransOpTest(prev, nextCopy, tran, expe);
+//        assertEquals(true, expe.isEqual(tran));
+//    }
+
     private void printTransOpTest(StringChangeRequest prev, StringChangeRequest next,
                                   StringChangeRequest transformed,StringChangeRequest expe) {
 
@@ -217,5 +268,9 @@ public class OperationalTransformationTests {
         System.out.println("ok\nfm".lastIndexOf("\n"));
         System.out.println("ok\nfm".length() - "ok\nfm".lastIndexOf("\n"));
     }
+
+
+
+
 }
 

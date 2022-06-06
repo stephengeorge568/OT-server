@@ -8,14 +8,15 @@ public class OperationalTransformation {
 
     // TODO just make this a bean or a service idk whcih is more epxected
     public static ArrayList<StringChangeRequest> transform(StringChangeRequest request,
-                                                         HashMap<Long, ArrayList<StringChangeRequest>> history) {
+                                                         HashMap<Integer, ArrayList<StringChangeRequest>> history) {
         ArrayList<StringChangeRequest> transformedRequests = new ArrayList<>(2);
+        transformedRequests.add(request);
 
-        for (StringChangeRequest historicalRequest : getAffectingRequests(request.getRevID(), history)) {
-            StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, request);
-
-            transformedRequests.add(transformOperation(historicalRequest, pair[0]));
-            if (pair[1] != null) transformedRequests.add(transformOperation(historicalRequest, pair[1]));
+        for (StringChangeRequest historicalRequest : getRelevantHistory(request.getRevID(), history)) {
+            StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, transformedRequests.get(0));
+            StringChangeRequest temp = transformOperation(historicalRequest, pair[0]);
+            transformedRequests.set(0, temp);
+            //if (pair[1] != null) transformedRequests.add(transformOperation(historicalRequest, pair[1]));
         }
         if (transformedRequests.isEmpty()) {
             transformedRequests.add(request);
@@ -25,11 +26,21 @@ public class OperationalTransformation {
 
     // returns list of changes with revIDs after given revID. List is ordered by revID in ascending order...
     // i.e oldest changes are at head of list
-    private static ArrayList<StringChangeRequest> getAffectingRequests(Long revID, HashMap<Long, ArrayList<StringChangeRequest>> history) {
+    private static ArrayList<StringChangeRequest> getRelevantHistory(Integer revID, HashMap<Integer, ArrayList<StringChangeRequest>> history) {
         ArrayList<StringChangeRequest> relevantRequests = new ArrayList<>();
-        for (Long i = history.size() - revID + 1; i < history.size(); i++) {
-            relevantRequests.addAll(history.get(i));
-        } return relevantRequests;
+//        for (Integer i = history.size() - revID + 1; i < history.size(); i++) {
+//            relevantRequests.addAll(history.get(i));
+//        }
+
+        history.forEach(((id, list) -> {
+        if (id >= revID) {
+            relevantRequests.addAll(list);
+        }
+        }));
+
+
+        return relevantRequests;
+
     }
 
     public static StringChangeRequest transformOperation(StringChangeRequest prev, StringChangeRequest next) {
@@ -56,11 +67,21 @@ public class OperationalTransformation {
                     && prev.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber();
 
             if (isPrevSimpleInsert) {
-                if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
-                    newSC = newSC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
-                } if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
-                    newEC = newEC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
+                if (numberOfNewLinesInPrev > 0) {
+                    if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+                        newSC = newSC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
+                    } if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+                        newEC = newEC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
+                    }
+                } else {
+                    if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+                        newSC = newSC + prevTextLengthAfterLastNewLine;
+                    } if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+                        newEC = newEC + prevTextLengthAfterLastNewLine;
+                    }
                 }
+
+
             } else {
                 if (numberOfNewLinesInPrev > 0) {
                     if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {

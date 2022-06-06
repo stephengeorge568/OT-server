@@ -48,16 +48,8 @@ public class DocumentService {
                     this.currentDocument.getChangeHistory().get(changedRequest.getRevID()).add(changedRequest);
                 else
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
-                this.currentDocument.setModel(DocumentUtil.updateModel(this.currentDocument.getModel(), changedRequest));
-                System.out.println("\n-------------------------------------------------------------------------\n"
-                        + this.currentDocument.getModel()
-                        + "\n-------------------------------------------------------------------------");
-                System.out.printf("DEBUG: propogating:\n\tfrom: %s\n\tstr:\n\trevId:%d\n\n",
-                        changedRequest.getIdentity(),
-                        changedRequest.getText(),
-                        changedRequest.getRevID());
-                // TODO do i need to update changedRequest revID before propogation?
-                this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
+                updateModel(changedRequest);
+                propogateToClients(changedRequest);
             }
         }
 
@@ -76,5 +68,20 @@ public class DocumentService {
 
     }
 
+    private void updateModel(StringChangeRequest changedRequest) {
+        this.currentDocument.setModel(DocumentUtil.updateModel(this.currentDocument.getModel(), changedRequest));
+        System.out.println("-------------------------------------------------------------------------\n"
+                        + this.currentDocument.getModel()
+                        + "\n-------------------------------------------------------------------------");
+        System.out.println("Okay");
+        System.out.printf("DEBUG: propogating:\n\tfrom: %s\n\tstr:%s\n\trevId:%d\n\n",
+                        changedRequest.getIdentity(),
+                        changedRequest.getText(),
+                        changedRequest.getRevID());
+    }
+
+    private void propogateToClients(StringChangeRequest changedRequest) {
+        this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
+    }
 
 }

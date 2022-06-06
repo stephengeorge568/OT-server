@@ -18,6 +18,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Set to accept all... insecure
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
 }
