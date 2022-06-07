@@ -234,6 +234,7 @@ public class OperationalTransformationTests {
     }
 
 
+
 //    @Test
 //    void transformOperation_PrevInsideNextReplaceWithText() {
 //        StringChangeRequest prev = new StringChangeRequest("123", new MonacoRange(6, 2, 1, 2 ));

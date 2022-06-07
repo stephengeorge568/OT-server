@@ -7,6 +7,9 @@ public class StringChangeRequest {
     private String identity; // currently just client ip. this will change
     private MonacoRange range;
     private Integer revID;
+    private Integer setID;
+
+
 
     public StringChangeRequest(String text, MonacoRange range) {
         this.text = text;
@@ -32,6 +35,7 @@ public class StringChangeRequest {
                 other.getRange().getStartLineNumber(),
                 other.getRange().getEndLineNumber());
         this.revID = other.getRevID();
+        this.setID = other.getSetID();
     }
 
     public Integer getRevID() {
@@ -78,6 +82,14 @@ public class StringChangeRequest {
 
     public void setRange(MonacoRange range) {
         this.range = range;
+    }
+
+    public Integer getSetID() {
+        return setID;
+    }
+
+    public void setSetID(Integer setID) {
+        this.setID = setID;
     }
 
 

@@ -13,9 +13,13 @@ public class OperationalTransformation {
         transformedRequests.add(request);
 
         for (StringChangeRequest historicalRequest : getRelevantHistory(request.getRevID(), history)) {
-            StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, transformedRequests.get(0));
-            StringChangeRequest temp = transformOperation(historicalRequest, pair[0]);
-            transformedRequests.set(0, temp);
+            // two request back to back from same client. the second one should not transform based on the first.
+            // it already accounted for that
+            if (!(request.getIdentity().equals(historicalRequest.getIdentity()) && request.getRevID() == historicalRequest.getRevID())) {
+                StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, transformedRequests.get(0));
+                StringChangeRequest temp = transformOperation(historicalRequest, pair[0]);
+                transformedRequests.set(0, temp);
+            }
             //if (pair[1] != null) transformedRequests.add(transformOperation(historicalRequest, pair[1]));
         }
         if (transformedRequests.isEmpty()) {

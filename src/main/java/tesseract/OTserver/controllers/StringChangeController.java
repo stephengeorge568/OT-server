@@ -23,7 +23,7 @@ public class StringChangeController {
     )
     @ResponseBody
     public ResponseEntity<Integer> stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
-        System.out.printf("DEBUG: received:\n\tfrom: %s\n\tstr:\n\trevId:%d\n\n", request.getIdentity(), request.getText(), request.getRevID());
+        //System.out.printf("DEBUG: received:\n\tfrom: %s\n\tstr: %s\n\trevId:%d\n\n", request.getIdentity(), request.getText(), request.getRevID());
         return ResponseEntity.ok(this.documentService.submitChange(request));
     }
 

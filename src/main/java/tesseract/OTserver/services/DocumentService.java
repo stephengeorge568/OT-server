@@ -37,11 +37,11 @@ public class DocumentService {
                 e.printStackTrace();
             }
         }
-
+        System.out.println("red sc: " + request.getRange().getStartColumn());
         ArrayList<StringChangeRequest> newChangeRequests = OperationalTransformation.transform(request, this.currentDocument.getChangeHistory());
 
         this.currentDocument.setRevID(this.currentDocument.getRevID() + 1);
-
+        System.out.println("red2 sc: " + newChangeRequests.get(0).getRange().getStartColumn());
         for (StringChangeRequest changedRequest : newChangeRequests) {
             if (changedRequest != null) {
                 if (this.currentDocument.getChangeHistory().get(changedRequest.getRevID()) != null)
@@ -73,7 +73,6 @@ public class DocumentService {
         System.out.println("-------------------------------------------------------------------------\n"
                         + this.currentDocument.getModel()
                         + "\n-------------------------------------------------------------------------");
-        System.out.println("Okay");
         System.out.printf("DEBUG: propogating:\n\tfrom: %s\n\tstr:%s\n\trevId:%d\n\n",
                         changedRequest.getIdentity(),
                         changedRequest.getText(),
@@ -81,6 +80,7 @@ public class DocumentService {
     }
 
     private void propogateToClients(StringChangeRequest changedRequest) {
+        changedRequest.setSetID(this.currentDocument.getRevID());
         this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
     }
 

@@ -21,6 +21,16 @@ public class DocumentUtilTests {
     }
 
     @Test
+    void getIndex_EndOfModel() {
+        assertEquals(5, DocumentUtil.getIndex("hello", 6, 1));
+    }
+
+    @Test
+    void getIndex_EndOfModel2() {
+        assertEquals(1, DocumentUtil.getIndex("a", 2, 1));
+    }
+
+    @Test
     void getIndex_lines() {
         assertEquals(24, DocumentUtil.getIndex("hello\nthere\\n\nokay\n\n\nthree \\n above this", 3, 6));
     }
@@ -35,6 +45,24 @@ public class DocumentUtilTests {
         String model = "";
         String expectedModel = "abc";
         StringChangeRequest req = new StringChangeRequest("abc", new MonacoRange(1,1,1,1));
+
+        assertEquals(expectedModel, DocumentUtil.updateModel(model, req));
+    }
+
+    @Test
+    void updateModel_EmptySimpleInsert2() {
+        String model = "";
+        String expectedModel = "a";
+        StringChangeRequest req = new StringChangeRequest("a", new MonacoRange(1,1,1,1));
+
+        assertEquals(expectedModel, DocumentUtil.updateModel(model, req));
+    }
+
+    @Test
+    void updateModel_EmptySimpleInsert3() {
+        String model = "a";
+        String expectedModel = "ab";
+        StringChangeRequest req = new StringChangeRequest("b", new MonacoRange(2,2,1,1));
 
         assertEquals(expectedModel, DocumentUtil.updateModel(model, req));
     }
