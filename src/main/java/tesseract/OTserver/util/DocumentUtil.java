@@ -1,9 +1,6 @@
 package tesseract.OTserver.util;
 
-import tesseract.OTserver.objects.MonacoRange;
 import tesseract.OTserver.objects.StringChangeRequest;
-
-import java.util.Arrays;
 
 public class DocumentUtil {
 
@@ -12,11 +9,6 @@ public class DocumentUtil {
     This method must mimic Monaco API's pushEditOperations functionality (or whatever process actually does the editing)
      */
     public static String updateModel(String model, StringChangeRequest req) {
-        System.out.println("Length: " + model.length());
-        System.out.println("Model: " + model);
-        System.out.println("Req: " + req.getText());
-        System.out.println("ins: " + getIndex(model, req.getRange().getStartColumn(), req.getRange().getStartLineNumber()));
-        System.out.println("col: " + req.getRange().getStartColumn());
         StringBuilder modelBuilder = new StringBuilder(model);
         boolean isSimpleInsert = req.getRange().getStartLineNumber() == req.getRange().getEndLineNumber()
                 && req.getRange().getStartColumn() == req.getRange().getEndColumn();

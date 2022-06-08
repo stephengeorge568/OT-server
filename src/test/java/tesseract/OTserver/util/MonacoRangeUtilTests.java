@@ -227,8 +227,8 @@ public class MonacoRangeUtilTests {
         StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(1,5,1,1));
         StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,8,1,1));
 
-        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
-        //System.out.println(requests[0].getRange().toString());
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(prev, next);
+        System.out.println(requests[0].getRange().toString());
         assertEquals(true, requests[1] == null);
         assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(1,3,1,1)));
     }
@@ -245,7 +245,7 @@ public class MonacoRangeUtilTests {
         StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(6,12,1,1));
         StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,8,1,1));
 
-        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(prev, next);
 
         assertEquals(true, requests[1] == null);
         assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(8,12,1,1)));
@@ -281,7 +281,7 @@ public class MonacoRangeUtilTests {
         StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(3,6,1,1));
         StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(1,8,1,1));
 
-        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(prev, next);
 
         assertEquals(true, requests[1] == null);
         assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(8,8,1,1)));
@@ -299,7 +299,7 @@ public class MonacoRangeUtilTests {
         StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(1,8,1,1));
         StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,6,1,1));
 
-        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(prev, next);
 
         assertEquals(true, requests[1] != null);
         assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(1,3,1,1)));
@@ -318,7 +318,7 @@ public class MonacoRangeUtilTests {
         StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(1,5,1,2));
         StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(2,6,2,3));
 
-        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(prev, next);
         //System.out.println(requests[0].getRange().toString());
         assertEquals(true, requests[1] == null);
         assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(1,2,1,2)));
@@ -336,7 +336,7 @@ public class MonacoRangeUtilTests {
         StringChangeRequest next = new StringChangeRequest("abc", new MonacoRange(6,12,2,2));
         StringChangeRequest prev = new StringChangeRequest("def", new MonacoRange(3,8,1,2));
 
-        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(next, prev);
+        StringChangeRequest[] requests = MonacoRangeUtil.resolveConflictingRanges(prev, next);
 
         assertEquals(true, requests[1] == null);
         assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(8,12,2,2)));

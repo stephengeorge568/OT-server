@@ -2,7 +2,6 @@ package tesseract.OTserver.util;
 
 import tesseract.OTserver.objects.MonacoRange;
 import tesseract.OTserver.objects.StringChangeRequest;
-import tesseract.OTserver.objects.StringResponse;
 
 public class MonacoRangeUtil {
 
@@ -30,10 +29,6 @@ public class MonacoRangeUtil {
     }
 
     public static boolean isRangeOverlap(MonacoRange prev, MonacoRange next) {
-        System.out.printf("isSCWithinRange(next, prev): %s\nisSCWithinRange(prev, next): %s" +
-                "\nisECWithinRange(next, prev): %s\nisECWithinRange(prev, next): %s\n",
-                isSCWithinRange(next, prev),isSCWithinRange(prev, next),isECWithinRange(next, prev),isECWithinRange(prev, next));
-
         return isSCWithinRange(next, prev) || isSCWithinRange(prev, next)
                 || isECWithinRange(next, prev) || isECWithinRange(prev, next);
 
@@ -57,7 +52,6 @@ public class MonacoRangeUtil {
         return false;
     }
 
-    // TODO cleanup
     public static boolean isECWithinRange(MonacoRange n, MonacoRange p) {
         if (n.getEndLineNumber() < p.getEndLineNumber()
                 && n.getEndLineNumber() > p.getStartLineNumber()) return true;
@@ -76,8 +70,6 @@ public class MonacoRangeUtil {
     }
 
     public static StringChangeRequest[] resolveConflictingRanges(StringChangeRequest prev, StringChangeRequest next) {
-
-
         /*
             N |-----|
             P |-----|

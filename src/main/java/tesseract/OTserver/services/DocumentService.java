@@ -7,7 +7,6 @@ import tesseract.OTserver.objects.Document;
 import tesseract.OTserver.objects.StringChangeRequest;
 import tesseract.OTserver.util.DocumentUtil;
 import tesseract.OTserver.util.OperationalTransformation;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,15 +16,14 @@ public class DocumentService {
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    // have it create new document when client connects TODO
     private Document currentDocument;
 
-    // https://stackoverflow.com/questions/51822642/spring-service-class-with-constructor-with-autowiredrequired-false-parame
-    // For when depen inj is needed for service constructors
     public DocumentService() {
         this.currentDocument = new Document();
     }
-    // TODO reformat so easier to test
-    // Thread.sleep is a temporary solution. This will need to be redesigned more than likely TODO
+
+    // Thread.sleep is a temporary solution. This will need to be redesigned more than likely
     public Integer submitChange(StringChangeRequest request) {
         // put change in pending changes queue
         currentDocument.getPendingChangesQueue().add(request);
@@ -37,17 +35,16 @@ public class DocumentService {
                 e.printStackTrace();
             }
         }
-        System.out.println("red sc: " + request.getRange().getStartColumn());
         ArrayList<StringChangeRequest> newChangeRequests = OperationalTransformation.transform(request, this.currentDocument.getChangeHistory());
 
         this.currentDocument.setRevID(this.currentDocument.getRevID() + 1);
-        System.out.println("red2 sc: " + newChangeRequests.get(0).getRange().getStartColumn());
         for (StringChangeRequest changedRequest : newChangeRequests) {
             if (changedRequest != null) {
                 if (this.currentDocument.getChangeHistory().get(changedRequest.getRevID()) != null)
                     this.currentDocument.getChangeHistory().get(changedRequest.getRevID()).add(changedRequest);
                 else
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
+
                 updateModel(changedRequest);
                 propogateToClients(changedRequest);
             }
@@ -58,25 +55,8 @@ public class DocumentService {
         return this.currentDocument.getRevID();
     }
 
-
-
-    public void printStuff() {
-        System.out.println("------------------------------ Start here");
-        currentDocument.getPendingChangesQueue().stream().forEach(r -> {
-            System.out.println(r.getText());
-        });
-
-    }
-
     private void updateModel(StringChangeRequest changedRequest) {
         this.currentDocument.setModel(DocumentUtil.updateModel(this.currentDocument.getModel(), changedRequest));
-        System.out.println("-------------------------------------------------------------------------\n"
-                        + this.currentDocument.getModel()
-                        + "\n-------------------------------------------------------------------------");
-        System.out.printf("DEBUG: propogating:\n\tfrom: %s\n\tstr:%s\n\trevId:%d\n\n",
-                        changedRequest.getIdentity(),
-                        changedRequest.getText(),
-                        changedRequest.getRevID());
     }
 
     private void propogateToClients(StringChangeRequest changedRequest) {

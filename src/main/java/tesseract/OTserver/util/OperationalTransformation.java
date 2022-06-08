@@ -1,12 +1,16 @@
 package tesseract.OTserver.util;
 
+import tesseract.OTserver.objects.MonacoRange;
 import tesseract.OTserver.objects.StringChangeRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class OperationalTransformation {
 
-    // TODO just make this a bean or a service idk whcih is more epxected
+    /*
+    TODO
+    conflicting range produces extra SCR's. this is not accounted for!
+     */
     public static ArrayList<StringChangeRequest> transform(StringChangeRequest request,
                                                          HashMap<Integer, ArrayList<StringChangeRequest>> history) {
         ArrayList<StringChangeRequest> transformedRequests = new ArrayList<>(2);
@@ -32,19 +36,14 @@ public class OperationalTransformation {
     // i.e oldest changes are at head of list
     private static ArrayList<StringChangeRequest> getRelevantHistory(Integer revID, HashMap<Integer, ArrayList<StringChangeRequest>> history) {
         ArrayList<StringChangeRequest> relevantRequests = new ArrayList<>();
-//        for (Integer i = history.size() - revID + 1; i < history.size(); i++) {
-//            relevantRequests.addAll(history.get(i));
-//        }
 
         history.forEach(((id, list) -> {
-        if (id >= revID) {
-            relevantRequests.addAll(list);
-        }
+            if (id >= revID) {
+                relevantRequests.addAll(list);
+            }
         }));
 
-
         return relevantRequests;
-
     }
 
     public static StringChangeRequest transformOperation(StringChangeRequest prev, StringChangeRequest next) {
@@ -55,7 +54,6 @@ public class OperationalTransformation {
         int newEL = next.getRange().getEndLineNumber();
         int numberOfNewLinesInPrev = (int) prev.getText().chars().filter(x -> x == '\n').count();
 
-        // TODO ensure \t and \n etc behave as 1 length char
         int prevTextLengthAfterLastNewLine = prev.getText().length();
 
         if (numberOfNewLinesInPrev > 0) {
@@ -111,11 +109,7 @@ public class OperationalTransformation {
             newEL += netNewLineNumberChange;
         }
 
-        // next.setRange() probably more appropriate. Might need to be tested though
-        next.getRange().setEndColumn(newEC);
-        next.getRange().setStartColumn(newSC);
-        next.getRange().setStartLineNumber(newSL);
-        next.getRange().setEndLineNumber(newEL);
+        next.setRange(new MonacoRange(newSC, newEC, newSL, newEL));
         return next;
     }
 

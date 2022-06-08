@@ -17,7 +17,7 @@ public class DocumentUtilTests {
 
     @Test
     void getIndex_startOfModel() {
-        assertEquals(1, DocumentUtil.getIndex("hello", 1, 1));
+        assertEquals(0, DocumentUtil.getIndex("hello", 1, 1));
     }
 
     @Test
@@ -32,12 +32,12 @@ public class DocumentUtilTests {
 
     @Test
     void getIndex_lines() {
-        assertEquals(24, DocumentUtil.getIndex("hello\nthere\\n\nokay\n\n\nthree \\n above this", 3, 6));
+        assertEquals(23, DocumentUtil.getIndex("hello\nthere\\n\nokay\n\n\nthree \\n above this", 3, 6));
     }
 
     @Test
     void getIndex_lines2() {
-        assertEquals(11, DocumentUtil.getIndex("ok\nthen\\n\nsir", 1, 3));
+        assertEquals(10, DocumentUtil.getIndex("ok\nthen\\n\nsir", 1, 3));
     }
 
     @Test

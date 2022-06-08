@@ -23,7 +23,6 @@ public class StringChangeController {
     )
     @ResponseBody
     public ResponseEntity<Integer> stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
-        //System.out.printf("DEBUG: received:\n\tfrom: %s\n\tstr: %s\n\trevId:%d\n\n", request.getIdentity(), request.getText(), request.getRevID());
         return ResponseEntity.ok(this.documentService.submitChange(request));
     }
 
@@ -34,8 +33,6 @@ public class StringChangeController {
     )
     @ResponseBody // TODO this can be ResponseEntity<String>
     public StringResponse getIdentity(HttpServletRequest httpRequest) {
-        // this is a lie because geting GET request doesnt mean Websockets connected TODO
-        System.out.println(httpRequest.getRemoteAddr() + " has connected via websocket.");
         return new StringResponse(httpRequest.getRemoteAddr());
     }
 
