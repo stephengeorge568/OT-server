@@ -7,6 +7,14 @@ public class MonacoRangeUtil {
 
 
     // Default is true. Finds conditions under which prev does not affect next and can be ignored
+
+    /**
+     * Determines whether or not a historical request affects the current request.
+     * @param prev previous, historical request
+     * @param next current request
+     * @return true when prev range is at same spot or before next range
+     * - i.e prev will affect next's range when transformed, false otherwise
+     */
     public static boolean isPreviousRequestRelevent(MonacoRange prev, MonacoRange next) {
 
         boolean isNextSimpleInsert = next.getStartLineNumber() - next.getEndLineNumber() == 0
@@ -28,6 +36,12 @@ public class MonacoRangeUtil {
         return true;
     }
 
+    /**
+     * Determines whether or not there is range overlap in any direction between prev and next
+     * @param prev previous, historical request
+     * @param next current request
+     * @return true when there is any overlap in the MonacoRanges of prev and next. False otherwise.
+     */
     public static boolean isRangeOverlap(MonacoRange prev, MonacoRange next) {
         return isSCWithinRange(next, prev) || isSCWithinRange(prev, next)
                 || isECWithinRange(next, prev) || isECWithinRange(prev, next);
@@ -35,7 +49,13 @@ public class MonacoRangeUtil {
     }
 
     // TODO cleanup
-    public static boolean isSCWithinRange(MonacoRange n, MonacoRange p) {
+    /**
+     * Determines whether or not p's start column is within n's range
+     * @param n request n
+     * @param p request p
+     * @return true when p's start column is within n's range. false otherwise
+     */
+    public static boolean isSCWithinRange(MonacoRange p, MonacoRange n) {
         if (n.getStartLineNumber() > p.getStartLineNumber()
                 && n.getStartLineNumber() < p.getEndLineNumber()) return true;
 
@@ -52,7 +72,13 @@ public class MonacoRangeUtil {
         return false;
     }
 
-    public static boolean isECWithinRange(MonacoRange n, MonacoRange p) {
+    /**
+     * Determines whether or not p's end column is within n's range
+     * @param n request n
+     * @param p request p
+     * @return true when p's end column is within n's range. false otherwise
+     */
+    public static boolean isECWithinRange(MonacoRange p, MonacoRange n) {
         if (n.getEndLineNumber() < p.getEndLineNumber()
                 && n.getEndLineNumber() > p.getStartLineNumber()) return true;
 
@@ -69,6 +95,13 @@ public class MonacoRangeUtil {
         return false;
     }
 
+    /**
+     * Shifts the range of next to remove selection that both prev and next delete/replace
+     * @param prev previous, historical request
+     * @param next current request that can be altered
+     * @return List of at most 2 requests. The first element is the original request that may have be altered.
+     * the second element is either null or a second request generated from splitting two ranges
+     */
     public static StringChangeRequest[] resolveConflictingRanges(StringChangeRequest prev, StringChangeRequest next) {
         /*
             N |-----|
@@ -79,8 +112,8 @@ public class MonacoRangeUtil {
             N       |
             P |-----|
              */
-        if (isSCWithinRange(next.getRange(), prev.getRange()) && // TODO test this condition
-                isECWithinRange(next.getRange(), prev.getRange())) {
+        if (isSCWithinRange(prev.getRange(), next.getRange()) && // TODO test this condition
+                isECWithinRange(prev.getRange(), next.getRange())) {
             next.getRange().setStartLineNumber(prev.getRange().getEndLineNumber());
             next.getRange().setEndLineNumber(prev.getRange().getEndLineNumber());
             next.getRange().setStartColumn(prev.getRange().getEndColumn());
@@ -96,7 +129,7 @@ public class MonacoRangeUtil {
             N       |--|
             P |-----|
         */
-        else if (isSCWithinRange(next.getRange(), prev.getRange())) {
+        else if (isSCWithinRange(prev.getRange(), next.getRange())) {
             next.getRange().setStartLineNumber(prev.getRange().getEndLineNumber());
             next.getRange().setStartColumn(prev.getRange().getEndColumn());
         }
@@ -112,7 +145,7 @@ public class MonacoRangeUtil {
 
             NOTE: next is no longer relevant
         */
-        else if (isECWithinRange(next.getRange(), prev.getRange())) {
+        else if (isECWithinRange(prev.getRange(), next.getRange())) {
             next.getRange().setEndLineNumber(prev.getRange().getStartLineNumber());
             next.getRange().setEndColumn(prev.getRange().getStartColumn());
         }
@@ -130,8 +163,8 @@ public class MonacoRangeUtil {
 
             NOTE: next is no longer relevant. otherNext must still be transformed
         */
-        else if (isECWithinRange(prev.getRange(), next.getRange())
-                && isSCWithinRange(prev.getRange(), next.getRange())) {
+        else if (isECWithinRange(next.getRange(), prev.getRange())
+                && isSCWithinRange(next.getRange(), prev.getRange())) {
             //create deep copy for otherNext
             StringChangeRequest otherNext = new StringChangeRequest(next);
             otherNext.setText("");

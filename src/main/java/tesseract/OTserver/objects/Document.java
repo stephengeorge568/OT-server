@@ -2,16 +2,35 @@ package tesseract.OTserver.objects;
 
 import java.util.*;
 
+/**
+ * Class that defines a code file document
+ */
 public class Document {
 
+    // unused
     private DocumentLanguage language;
+
+    /**
+     * The string model of the document. The text of the code file
+     */
     private String model;
+
+    /**
+     * The revision Id of the document. Each committed string change request incrememts this value.
+     * This is used to flag historical requests as irrelevant
+     */
     private Integer revID;
+
+    /**
+     * The map of revID to list of string change requests. Keeps the history of all committed changes.
+     */
     private HashMap<Integer, ArrayList<StringChangeRequest>> changeHistory;
+
+    /**
+     * The queue of pending string change requests.
+     */
     private Queue<StringChangeRequest> pendingChangesQueue;
 
-    // Will need new constructor when its ready to pull data from previous session
-    // For new documents
     public Document() {
         this.language = DocumentLanguage.JAVA;
         this.model = "";

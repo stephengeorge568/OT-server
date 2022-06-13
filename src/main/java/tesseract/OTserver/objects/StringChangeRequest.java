@@ -1,16 +1,42 @@
 package tesseract.OTserver.objects;
-import java.time.Instant;
 
+/**
+ * Class that defines the change operation in the code editor.
+ */
 public class StringChangeRequest {
+
+    /**
+     * Timestamp of the moment the operation was created in the client editor
+     */
     private String timestamp;
+
+    /**
+     * The text of the change
+     */
     private String text;
-    private String identity; // currently just client ip. this will change
+
+    /**
+     * The identifier of the client. Currently, this is the client's IP.
+     */
+    private String identity;
+
+    /**
+     * The range of the operation
+     */
     private MonacoRange range;
+
+    /**
+     * The document revision ID of the client at the time the operation was committed.
+     */
     private Integer revID;
+
+    /**
+     * The ID that the client will set its document revision id to after receiving this request
+     */
     private Integer setID;
 
 
-
+    // TODO cleanup, too many damn constructors makes me uncomfortable
     public StringChangeRequest(String text, MonacoRange range) {
         this.text = text;
         this.range = range;
@@ -24,7 +50,7 @@ public class StringChangeRequest {
 
     public StringChangeRequest() {}
 
-    // Deep copy constructor
+    // TODO deep copy constructor, convert to .clone() override
     public StringChangeRequest(StringChangeRequest other) {
         this.text = other.text;
         this.timestamp = other.timestamp;
@@ -109,6 +135,7 @@ public class StringChangeRequest {
                 ", rangeSL=" + range.getStartLineNumber() +
                 ", rangeEL=" + range.getEndLineNumber() +
                 ", revID=" + revID +
+                ", setID=" + setID +
                 '}';
     }
 }

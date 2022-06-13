@@ -4,9 +4,11 @@ import tesseract.OTserver.objects.StringChangeRequest;
 
 public class DocumentUtil {
 
-    /*
-    Monaco API docs : https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ITextModel.html#pushEditOperations
-    This method must mimic Monaco API's pushEditOperations functionality (or whatever process actually does the editing)
+    /**
+     * Update the model of the document by converting MonacoRange to standard string indexes.
+     * @param model the current string model
+     * @param req the request to commit to the model
+     * @return the updated model
      */
     public static String updateModel(String model, StringChangeRequest req) {
         StringBuilder modelBuilder = new StringBuilder(model);
@@ -24,6 +26,13 @@ public class DocumentUtil {
         return modelBuilder.toString();
     }
 
+    /**
+     * The standard string index of the request's starting or ending point
+     * @param model the current model
+     * @param col the column number in MonacoRange terms
+     * @param line the line number in MonacoRange terms
+     * @return the standard string index of a MonacoRange point
+     */
     public static int getIndex(String model, int col, int line) {
         int index = 0;
         String[] lines = model.split("\n");

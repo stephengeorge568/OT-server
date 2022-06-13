@@ -1,5 +1,8 @@
 package tesseract.OTserver.objects;
 
+/**
+ * Class that defines the range of a string change request. Mirrors Monaco Code Editor's range data model in TS
+ */
 public class MonacoRange {
 
     private Integer endColumn;

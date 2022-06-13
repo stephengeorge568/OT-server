@@ -5,7 +5,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tesseract.OTserver.objects.StringChangeRequest;
-import tesseract.OTserver.objects.StringResponse;
 import tesseract.OTserver.services.DocumentService;
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +14,12 @@ public class StringChangeController {
     @Autowired
     private DocumentService documentService;
 
+    /**
+     * Incoming string change requests from clients
+     * @param httpRequest
+     * @param request The request from the client
+     * @return Response entity containing the id the client should update its revID to
+     */
     @RequestMapping(
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE},
@@ -23,6 +28,7 @@ public class StringChangeController {
     )
     @ResponseBody
     public ResponseEntity<Integer> stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
+        System.out.printf("\n%s\n", request.toString());
         return ResponseEntity.ok(this.documentService.submitChange(request));
     }
 
@@ -31,9 +37,10 @@ public class StringChangeController {
             method = RequestMethod.GET,
             path = "identity"
     )
-    @ResponseBody // TODO this can be ResponseEntity<String>
-    public StringResponse getIdentity(HttpServletRequest httpRequest) {
-        return new StringResponse(httpRequest.getRemoteAddr());
+    @ResponseBody
+    public String getIdentity(HttpServletRequest httpRequest) {
+        System.out.printf("%s has connected.\n", httpRequest.getRemoteAddr());
+        return httpRequest.getRemoteAddr();
     }
 
 }
