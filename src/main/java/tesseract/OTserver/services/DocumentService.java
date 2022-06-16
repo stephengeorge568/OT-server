@@ -95,4 +95,13 @@ public class DocumentService {
         this.simpMessagingTemplate.convertAndSend("/broker/string-change-request", changedRequest);
     }
 
+    public String getDocumentModel() {
+        return this.currentDocument.getModel();
+    }
+
+    public Integer getDocumentRevId() {
+        return this.currentDocument.getRevID();
+    }
+
+
 }
