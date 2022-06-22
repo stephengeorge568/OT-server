@@ -64,6 +64,7 @@ public class DocumentService {
 
     /**
      * Makes THIS request's thread wait for other, preceding threads to finish transforming
+     * TODO Replace with a FIFO blocking queue or something like that
      * @param request the request this thread is responsible for
      */
     private void waitForTurn(StringChangeRequest request) {
