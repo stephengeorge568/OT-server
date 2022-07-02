@@ -5,9 +5,6 @@ import tesseract.OTserver.objects.StringChangeRequest;
 
 public class MonacoRangeUtil {
 
-
-    // Default is true. Finds conditions under which prev does not affect next and can be ignored
-
     /**
      * Determines whether or not a historical request affects the current request.
      * @param prev previous, historical request
@@ -17,15 +14,13 @@ public class MonacoRangeUtil {
      */
     public static boolean isPreviousRequestRelevent(MonacoRange prev, MonacoRange next) {
 
-        boolean isNextSimpleInsert = next.getStartLineNumber() - next.getEndLineNumber() == 0
-                && next.getStartColumn() - next.getEndColumn() == 0;
         boolean isPrevStartLineAfterNextEndLine = prev.getStartLineNumber() > next.getEndLineNumber();
         boolean isSameLine = prev.getStartLineNumber() == next.getEndLineNumber();
 
         if (isPrevStartLineAfterNextEndLine) return false; // if prev is on bigger line # than next - ignore
         if (isSameLine) { // if prev starts on same line that next ends
             // if next is simple insert, then next.ec cannot be prev.sc
-            if(isNextSimpleInsert) {
+            if(isRangeSimpleInsert(next)) {
                 // next.ec must be less than prev.sc
                 if (next.getEndColumn() < prev.getStartColumn()) return false;
             } else {
@@ -73,19 +68,27 @@ public class MonacoRangeUtil {
     }
 
     /**
-     * Determines whether or not p's end column is within n's range
+     * Determines whether or not n's end column is within p's range   -note comment changed here. used to be other way around
      * @param n request n
      * @param p request p
-     * @return true when p's end column is within n's range. false otherwise
+     * @return true when n's end column is within p's range. false otherwise
      */
     public static boolean isECWithinRange(MonacoRange p, MonacoRange n) {
+        // if n.ec is on a line in-between where p starts and p ends, return true
         if (n.getEndLineNumber() < p.getEndLineNumber()
                 && n.getEndLineNumber() > p.getStartLineNumber()) return true;
 
+        // if n and p end on same line
         if (n.getEndLineNumber() == p.getEndLineNumber()) {
+            // if n also ends on same line that p starts
             if (n.getEndLineNumber() == p.getStartLineNumber()) {
+                // if n ends before p starts on that line, return false
                 if (!(n.getEndColumn() > p.getStartColumn())) return false;
-            } if (n.getEndColumn() <= p.getEndColumn()) return true;
+            }
+            // if n ends before p ends, return true
+            if (n.getEndColumn() <= p.getEndColumn()) { //n.getEndColumn() <= p.getEndColumn() TODO requires more testing
+                return true;
+            }
         }
 
         if (n.getEndLineNumber() == p.getStartLineNumber() && n.getEndLineNumber() != p.getEndLineNumber()) {
@@ -103,6 +106,12 @@ public class MonacoRangeUtil {
      * the second element is either null or a second request generated from splitting two ranges
      */
     public static StringChangeRequest[] resolveConflictingRanges(StringChangeRequest prev, StringChangeRequest next) {
+
+        // if either is a simple insert, there cannot be conflicting ranges
+        if (isRangeSimpleInsert(prev.getRange())  || isRangeSimpleInsert(next.getRange())) {
+            return new StringChangeRequest[]{next, null};
+        }
+
         /*
             N |-----|
             P |-----|
@@ -166,7 +175,9 @@ public class MonacoRangeUtil {
         else if (isECWithinRange(next.getRange(), prev.getRange())
                 && isSCWithinRange(next.getRange(), prev.getRange())) {
             //create deep copy for otherNext
+            // TODO turn into .clone()
             StringChangeRequest otherNext = new StringChangeRequest(next);
+            // set to no text, because this new request only replaces with empty string
             otherNext.setText("");
 
             //shift end of next to start of prev
@@ -181,5 +192,11 @@ public class MonacoRangeUtil {
         }
         return new StringChangeRequest[]{next, null};
     }
+
+    private static boolean isRangeSimpleInsert(MonacoRange range) {
+        return range.getStartLineNumber() - range.getEndLineNumber() == 0
+                && range.getStartColumn() - range.getEndColumn() == 0;
+    }
+
 
 }

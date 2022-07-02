@@ -23,7 +23,9 @@ public class OperationalTransformation {
         // For all relevant requests... transform
         for (StringChangeRequest historicalRequest : getRelevantHistory(request.getRevID(), history)) {
 
-            if (!(request.getIdentity().equals(historicalRequest.getIdentity()) && request.getRevID() == historicalRequest.getRevID())) {
+            // If previous request and current request share same identity, ignore, transform otherwise
+            if (!(request.getIdentity().equals(historicalRequest.getIdentity()))) { //  && request.getRevID() == historicalRequest.getRevID() why was this inside !()??
+                System.out.println("Transforming...");
                 StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, transformedRequests.get(0));
                 StringChangeRequest temp = transformOperation(historicalRequest, pair[0]);
                 transformedRequests.set(0, temp);

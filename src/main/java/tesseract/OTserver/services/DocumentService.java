@@ -9,6 +9,7 @@ import tesseract.OTserver.util.DocumentUtil;
 import tesseract.OTserver.util.OperationalTransformation;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 @Service
 public class DocumentService {
@@ -36,6 +37,14 @@ public class DocumentService {
         // wait for this requests turn to transform
         waitForTurn(request);
 
+//        this.currentDocument.getChangeHistory().forEach((revId, list) -> {
+//            System.out.printf("\tHistory: %d\n", revId);
+//            list.forEach((r) -> {
+//                System.out.printf("\t\t%s\n", r.toString());
+//            });
+//        });
+
+
         // when this request's turn is next, transform
         ArrayList<StringChangeRequest> newChangeRequests = OperationalTransformation.transform(request, this.currentDocument.getChangeHistory());
 
@@ -50,10 +59,13 @@ public class DocumentService {
                 else
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
 
+                System.out.printf("Transformed: %s\n", changedRequest.toString());
                 updateModel(changedRequest);
                 propogateToClients(changedRequest);
             }
         }
+
+        System.out.printf("%s is done.\n", request.getIdentity());
 
         // remove this request from pending queue, since it is completed
         this.currentDocument.getPendingChangesQueue().remove();
@@ -77,6 +89,7 @@ public class DocumentService {
                 e.printStackTrace();
             }
         }
+        System.out.printf("%s turn!\n", request.getIdentity());
     }
 
     /**

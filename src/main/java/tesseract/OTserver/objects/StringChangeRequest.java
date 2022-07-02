@@ -36,7 +36,7 @@ public class StringChangeRequest {
     private Integer setID;
 
 
-    // TODO cleanup, too many damn constructors makes me uncomfortable
+    // TODO cleanup, remove constructors, turn setters into builder
     public StringChangeRequest(String text, MonacoRange range) {
         this.text = text;
         this.range = range;

@@ -342,6 +342,22 @@ public class MonacoRangeUtilTests {
         assertEquals(true, requests[0].getRange().isEqual(new MonacoRange(8,12,2,2)));
     }
 
+//    @Test
+//    void isECWithinRange_prevRangeAndNextSimpleInsertAtEndOfPrev_AssertFalse() {
+//        MonacoRange p = new MonacoRange(1,5,1,1);
+//        MonacoRange n = new MonacoRange(5,5,1,1);
+//
+//        assertEquals(false, MonacoRangeUtil.isECWithinRange(p, n));
+//    }
+//
+//    @Test
+//    void isECWithinRange_prevRangeAndNextSimpleInsertAfterPrev_AssertFalse() {
+//        MonacoRange p = new MonacoRange(1,5,1,1);
+//        MonacoRange n = new MonacoRange(6,6,1,1);
+//
+//        assertEquals(false, MonacoRangeUtil.isECWithinRange(p, n));
+//    }
+
 
 }
 

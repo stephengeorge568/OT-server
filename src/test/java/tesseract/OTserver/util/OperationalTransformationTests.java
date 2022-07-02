@@ -211,18 +211,98 @@ public class OperationalTransformationTests {
     }
 
     @Test
+    void transformOperation_prevRangeDeletedRightBeforeNextRange() {
+        StringChangeRequest prev = new StringChangeRequest("", new MonacoRange(1, 7, 1, 1 ));
+        StringChangeRequest next = new StringChangeRequest("g", new MonacoRange(7, 7, 1, 1));
+        StringChangeRequest nextCopy = new StringChangeRequest("g", new MonacoRange(7, 7, 1, 1));
+        StringChangeRequest expe = new StringChangeRequest("g", new MonacoRange(1, 1, 1, 1));
+        StringChangeRequest tran = OperationalTransformation.transformOperation(prev, next);
+
+        printTransOpTest(prev, nextCopy, tran, expe);
+        assertEquals(true, expe.isEqual(tran));
+    }
+
+    @Test
     void transform_OnlyFirstHistoryRelevant() {
         StringChangeRequest request = new StringChangeRequest("a", new MonacoRange(5, 5, 1, 1 ), 1);
-        StringChangeRequest history1 = new StringChangeRequest("c", new MonacoRange(1, 1, 1, 1), 1);
-        StringChangeRequest history2 = new StringChangeRequest("q", new MonacoRange(3, 3, 1, 1), 1);
-
+        request.setIdentity("C");
+        StringChangeRequest history1 = new StringChangeRequest("", new MonacoRange(1, 5, 1, 1), 1);
+        history1.setIdentity("H");
         ArrayList<StringChangeRequest> historyList = new ArrayList<>();
         historyList.add(history1);
-        historyList.add(history2);
 
         HashMap<Integer, ArrayList<StringChangeRequest>> history = new HashMap<>();
         history.put(1, historyList);
-        StringChangeRequest expe1 = new StringChangeRequest("a", new MonacoRange(7, 7, 1, 1), 1);
+        StringChangeRequest expe1 = new StringChangeRequest("a", new MonacoRange(1, 1, 1, 1), 1);
+        //StringChangeRequest expe2 = new StringChangeRequest(null);
+        ArrayList<StringChangeRequest> trans = OperationalTransformation.transform(request, history);
+
+        System.out.println("Transformed:\n" + trans.get(0).toString());
+        System.out.println("Expected:\n" + expe1.toString());
+
+        assertEquals(true, trans.get(0).isEqual(expe1));
+        //assertEquals(true, trans.get(1) == null);
+    }
+
+    @Test
+    void transform_test() {
+        StringChangeRequest request = new StringChangeRequest("d", new MonacoRange(39, 39, 1, 1 ), 1);
+        request.setIdentity("3");
+        StringChangeRequest history1 = new StringChangeRequest("a", new MonacoRange(37, 37, 1, 1), 1);
+        history1.setIdentity("3");
+        StringChangeRequest history2 = new StringChangeRequest("", new MonacoRange(37, 38, 1, 1), 1);
+        history2.setIdentity("31");
+        ArrayList<StringChangeRequest> historyList = new ArrayList<>();
+        historyList.add(history2);
+        historyList.add(history1);
+
+        HashMap<Integer, ArrayList<StringChangeRequest>> history = new HashMap<>();
+        history.put(1, historyList);
+        StringChangeRequest expe1 = new StringChangeRequest("d", new MonacoRange(38, 38, 1, 1), 1);
+        //StringChangeRequest expe2 = new StringChangeRequest(null);
+        ArrayList<StringChangeRequest> trans = OperationalTransformation.transform(request, history);
+
+        System.out.println("Transformed:\n" + trans.get(0).toString());
+        System.out.println("Expected:\n" + expe1.toString());
+
+        assertEquals(true, trans.get(0).isEqual(expe1));
+        //assertEquals(true, trans.get(1) == null);
+    }
+
+    @Test
+    void transform_test2() {
+        StringChangeRequest request = new StringChangeRequest("g", new MonacoRange(35, 35, 2, 2 ), 1);
+        request.setIdentity("3");
+        StringChangeRequest history1 = new StringChangeRequest("u", new MonacoRange(34, 34, 2, 2), 1);
+        history1.setIdentity("3");
+        ArrayList<StringChangeRequest> historyList = new ArrayList<>();
+        historyList.add(history1);
+
+        HashMap<Integer, ArrayList<StringChangeRequest>> history = new HashMap<>();
+        history.put(1, historyList);
+        StringChangeRequest expe1 = new StringChangeRequest("g", new MonacoRange(35, 35, 2, 2), 1);
+        //StringChangeRequest expe2 = new StringChangeRequest(null);
+        ArrayList<StringChangeRequest> trans = OperationalTransformation.transform(request, history);
+
+        System.out.println("Transformed:\n" + trans.get(0).toString());
+        System.out.println("Expected:\n" + expe1.toString());
+
+        assertEquals(true, trans.get(0).isEqual(expe1));
+        //assertEquals(true, trans.get(1) == null);
+    }
+
+    @Test
+    void transform_test3() { // restart here
+        StringChangeRequest request = new StringChangeRequest("c", new MonacoRange(49, 49, 6, 6 ), 1);
+        request.setIdentity("31");
+        StringChangeRequest history1 = new StringChangeRequest("d", new MonacoRange(1, 51, 1, 8), 1);
+        history1.setIdentity("3");
+        ArrayList<StringChangeRequest> historyList = new ArrayList<>();
+        historyList.add(history1);
+
+        HashMap<Integer, ArrayList<StringChangeRequest>> history = new HashMap<>();
+        history.put(1, historyList);
+        StringChangeRequest expe1 = new StringChangeRequest("c", new MonacoRange(1, 1, 1, 1), 1);
         //StringChangeRequest expe2 = new StringChangeRequest(null);
         ArrayList<StringChangeRequest> trans = OperationalTransformation.transform(request, history);
 
