@@ -82,14 +82,14 @@ public class OperationalTransformation {
         // Likely redundant
         if (MonacoRangeUtil.isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
 
-            int netNewLineNumberChange = numberOfNewLinesInPrev
+            int netPrevNewLineNumberChange = numberOfNewLinesInPrev
                     - (prev.getRange().getEndLineNumber() - prev.getRange().getStartLineNumber());
 
             boolean isPrevSimpleInsert = prev.getRange().getStartColumn() == prev.getRange().getEndColumn()
                     && prev.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber();
 
             // TODO numberOfNewLinesInPrev > 0 may be redundant. clean up
-            // If simple insert, range behaves differently. So treat non simple insert differently
+            // If simple insert, range behaves differently.
             if (isPrevSimpleInsert) {
                 if (numberOfNewLinesInPrev > 0) {
                     if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
@@ -113,19 +113,46 @@ public class OperationalTransformation {
                         newEC = (newEC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine + 1;
                     }
                 } else {
+                    // prev is range and there is no new lines in prev text
+
+
+                    // this all assumes next is on same line as prev
                     int numberOfCharsDeletedOnPrevLine = prev.getRange().getEndColumn()
                                 - prev.getRange().getStartColumn();
                     if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
                         newSC = newSC - numberOfCharsDeletedOnPrevLine + prev.getText().length();
+                    } else { // next start is on diff line than prev start but still within range
+                        newSC = prev.getRange().getStartColumn() + prev.getText().length();
                     }
+
+
+
                     if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
                         newEC = newEC - numberOfCharsDeletedOnPrevLine + prev.getText().length();
+                    } else {
+                        if (MonacoRangeUtil.isRangeSimpleInsert(next.getRange())) {
+                            newEC = newSC;
+                        } else {
+                            // TODO
+                            System.out.println("NOT IMPLEMENTED.");
+                        }
                     }
+                    // deal with new on diff line (but still inside prev range)
                 }
             }
 
-            newSL += netNewLineNumberChange;
-            newEL += netNewLineNumberChange;
+            // If next start column within range of prev, push next.SL to prev.SL + # of new lines in prev
+            if (MonacoRangeUtil.isSCWithinRange(prev.getRange(), next.getRange())) {
+                newSL = prev.getRange().getStartLineNumber() + numberOfNewLinesInPrev;
+            } else {
+                newSL += netPrevNewLineNumberChange;
+            }
+
+            if (MonacoRangeUtil.isECWithinRange(prev.getRange(), next.getRange())) {
+                newEL = prev.getRange().getStartLineNumber() + numberOfNewLinesInPrev;
+            } else {
+                newEL += netPrevNewLineNumberChange;
+            }
         }
 
         next.setRange(new MonacoRange(newSC, newEC, newSL, newEL));

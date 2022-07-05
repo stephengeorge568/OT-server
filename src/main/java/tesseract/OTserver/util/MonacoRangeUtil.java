@@ -193,7 +193,7 @@ public class MonacoRangeUtil {
         return new StringChangeRequest[]{next, null};
     }
 
-    private static boolean isRangeSimpleInsert(MonacoRange range) {
+    public static boolean isRangeSimpleInsert(MonacoRange range) {
         return range.getStartLineNumber() - range.getEndLineNumber() == 0
                 && range.getStartColumn() - range.getEndColumn() == 0;
     }

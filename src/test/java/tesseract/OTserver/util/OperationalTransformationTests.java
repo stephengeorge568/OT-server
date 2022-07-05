@@ -302,7 +302,7 @@ public class OperationalTransformationTests {
 
         HashMap<Integer, ArrayList<StringChangeRequest>> history = new HashMap<>();
         history.put(1, historyList);
-        StringChangeRequest expe1 = new StringChangeRequest("c", new MonacoRange(1, 1, 1, 1), 1);
+        StringChangeRequest expe1 = new StringChangeRequest("c", new MonacoRange(2, 2, 1, 1), 1);
         //StringChangeRequest expe2 = new StringChangeRequest(null);
         ArrayList<StringChangeRequest> trans = OperationalTransformation.transform(request, history);
 
@@ -312,6 +312,7 @@ public class OperationalTransformationTests {
         assertEquals(true, trans.get(0).isEqual(expe1));
         //assertEquals(true, trans.get(1) == null);
     }
+
 
 
 
