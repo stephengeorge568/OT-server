@@ -8,4 +8,4 @@ RUN mvn clean package
 COPY /usr/local/src/OT-server/target/OT-server-0.0.1.jar /usr/local/src/OT-server/target/OT-server-0.0.1.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/target/OT-server-0.0.1.jar"]
+ENTRYPOINT ["java","-jar","target/OT-server-0.0.1.jar"]
