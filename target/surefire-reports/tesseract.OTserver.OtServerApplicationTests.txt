@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: tesseract.OTserver.OtServerApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.308 s - in tesseract.OTserver.OtServerApplicationTests

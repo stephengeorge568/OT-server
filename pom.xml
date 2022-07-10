@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>tesseract</groupId>
 	<artifactId>OT-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>OT-server</name>
 	<description>Server application for the Operational Transformation implementation.</description>
 	<properties>

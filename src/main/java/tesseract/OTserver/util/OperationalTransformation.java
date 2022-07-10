@@ -79,7 +79,6 @@ public class OperationalTransformation {
             prevTextLengthAfterLastNewLine = prev.getText().length() - prev.getText().lastIndexOf("\n") - 1;
         }
 
-        // Likely redundant
         if (MonacoRangeUtil.isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
 
             int netPrevNewLineNumberChange = numberOfNewLinesInPrev
@@ -124,9 +123,7 @@ public class OperationalTransformation {
                     } else { // next start is on diff line than prev start but still within range
                         newSC = prev.getRange().getStartColumn() + prev.getText().length();
                     }
-
-
-
+                    
                     if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
                         newEC = newEC - numberOfCharsDeletedOnPrevLine + prev.getText().length();
                     } else {
