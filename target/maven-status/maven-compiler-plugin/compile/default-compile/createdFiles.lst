@@ -6,6 +6,7 @@ tesseract\OTserver\controllers\StringChangeController.class
 tesseract\OTserver\services\DocumentService.class
 tesseract\OTserver\objects\StringChangeRequest.class
 tesseract\OTserver\components\DocumentComponent.class
+tesseract\OTserver\config\SecurityConfig.class
 tesseract\OTserver\OtServerApplication.class
 tesseract\OTserver\objects\DocumentLanguage.class
 tesseract\OTserver\config\WebConfig.class
