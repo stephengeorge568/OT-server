@@ -43,4 +43,5 @@ public class DocumentUtil {
 
         return index - 1; // -1 because string first index is 0, whereas MonacoRange first index is 1
     }
+
 }
