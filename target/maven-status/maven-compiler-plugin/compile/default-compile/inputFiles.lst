@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\MonacoRange.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\Document.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\DocumentLanguage.java
@@ -13,3 +14,20 @@ C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\util\MonacoR
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\controllers\WebSocketController.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\components\DocumentComponent.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\util\OperationalTransformation.java
+=======
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/config/WebSocketConfig.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/objects/StringChangeRequest.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/components/DocumentComponent.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/config/WebConfig.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/objects/MonacoRange.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/config/SecurityConfig.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/objects/DocumentLanguage.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/util/OperationalTransformation.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/util/MonacoRangeUtil.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/objects/Document.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/controllers/WebSocketController.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/OtServerApplication.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/util/DocumentUtil.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/controllers/StringChangeController.java
+/usr/local/src/OT-server/src/main/java/tesseract/OTserver/services/DocumentService.java
+>>>>>>> 838b03e622fb536f8a432274f44a5982225963a7

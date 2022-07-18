@@ -2,16 +2,20 @@ package tesseract.OTserver.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import tesseract.OTserver.objects.MonacoRange;
 import tesseract.OTserver.objects.StringChangeRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 @SpringBootTest
 public class OperationalTransformationTests {
     // https://www.baeldung.com/junit-5
+
     @Test
     void contextLoads() {
     }
@@ -344,14 +348,6 @@ public class OperationalTransformationTests {
                 prev.getText(), next.getText(), transformed.getText(), expe.getText());
         System.out.println(output);
     }
-
-    @Test
-    void test() {
-        System.out.println("ok\nfm".lastIndexOf("\n"));
-        System.out.println("ok\nfm".length() - "ok\nfm".lastIndexOf("\n"));
-    }
-
-
 
 
 }
