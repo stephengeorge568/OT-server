@@ -5,13 +5,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import tesseract.OTserver.objects.StringChangeRequest;
 import tesseract.OTserver.services.DocumentService;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @RestController
 public class StringChangeController {

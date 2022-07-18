@@ -12,6 +12,7 @@
 	<artifactId>OT-server</artifactId>
 	<version>0.0.1</version>
 	<name>OT-server</name>
+	<packaging>war</packaging>
 	<description>Server application for the Operational Transformation implementation.</description>
 	<properties>
 		<java.version>11</java.version>

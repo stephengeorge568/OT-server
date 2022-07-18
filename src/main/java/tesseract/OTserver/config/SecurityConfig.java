@@ -15,6 +15,7 @@ public class SecurityConfig {
                         channel.anyRequest().requiresSecure())
                 .authorizeRequests(authorize ->
                         authorize.anyRequest().permitAll())
+                .csrf().disable() // TODO temporary
                 .build();
     }
 
