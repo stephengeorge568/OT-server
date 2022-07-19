@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: tesseract.OTserver.util.OperationalTransformationTests
 -------------------------------------------------------------------------------
-Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.259 s - in tesseract.OTserver.util.OperationalTransformationTests
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.273 s - in tesseract.OTserver.util.OperationalTransformationTests

@@ -29,7 +29,7 @@ public class StringChangeController {
     )
     @ResponseBody
     public ResponseEntity<Integer> stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
-        System.out.printf("\nEntry: %s\n", request.toString());
+        System.out.printf("%s\n", request.toString());
         return ResponseEntity.ok(this.documentService.submitChange(request));
     }
 

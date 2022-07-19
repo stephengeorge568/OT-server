@@ -3,6 +3,7 @@ package tesseract.OTserver.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.SpringVersion;
 import tesseract.OTserver.objects.MonacoRange;
 import tesseract.OTserver.objects.StringChangeRequest;
 

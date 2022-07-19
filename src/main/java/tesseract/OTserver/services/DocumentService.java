@@ -59,13 +59,10 @@ public class DocumentService {
                 else
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
 
-                System.out.printf("Transformed: %s\n", changedRequest.toString());
                 updateModel(changedRequest);
                 propogateToClients(changedRequest);
             }
         }
-
-        System.out.printf("%s is done.\n", request.getIdentity());
 
         // remove this request from pending queue, since it is completed
         this.currentDocument.getPendingChangesQueue().remove();
@@ -89,7 +86,6 @@ public class DocumentService {
                 e.printStackTrace();
             }
         }
-        System.out.printf("%s turn!\n", request.getIdentity());
     }
 
     /**
