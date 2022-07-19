@@ -1,7 +1,6 @@
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\MonacoRange.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\Document.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\DocumentLanguage.java
-C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\config\SecurityConfig.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\StringChangeRequest.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\config\WebConfig.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\config\WebSocketConfig.java
@@ -11,5 +10,6 @@ C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\services\Doc
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\util\DocumentUtil.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\util\MonacoRangeUtil.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\controllers\WebSocketController.java
+C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\config\WebSecurityConfig.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\components\DocumentComponent.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\util\OperationalTransformation.java

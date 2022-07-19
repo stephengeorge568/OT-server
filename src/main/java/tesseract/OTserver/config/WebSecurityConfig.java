@@ -36,14 +36,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         } catch (NullPointerException e) {
             //throw new IllegalStateException("Environment was not set. Use --spring.profiles.active");
         }
-
-
-
-
-
-
-
-        ;
-
     }
 }
