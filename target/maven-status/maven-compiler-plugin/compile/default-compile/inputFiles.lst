@@ -2,13 +2,13 @@ C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\Mona
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\Document.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\DocumentLanguage.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\objects\StringChangeRequest.java
+C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\services\OtService.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\config\WebConfig.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\config\WebSocketConfig.java
-C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\controllers\StringChangeController.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\OtServerApplication.java
-C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\services\DocumentService.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\util\DocumentUtil.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\util\MonacoRangeUtil.java
+C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\controllers\OtController.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\controllers\WebSocketController.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\config\WebSecurityConfig.java
 C:\Users\Stephen\Desktop\OT-server\src\main\java\tesseract\OTserver\components\DocumentComponent.java

@@ -3,7 +3,7 @@ FROM maven:3.8.3-jdk-11-slim AS build
 WORKDIR /usr/local/src/OT-server
 COPY ./ /usr/local/src/OT-server
 
-RUN mvn package
+RUN mvn clean package
 
 COPY ./target/ /usr/local/src/OT-server/target/
 

@@ -1,8 +1,10 @@
 package tesseract.OTserver.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.core.env.Environment;
@@ -14,11 +16,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private Environment env;
 
+    @Value("${application.security.disabled:false}")
+    private boolean isSecurityDisabled;
+
+//    @Value("${spring.profiles.active}")
+//    private String profile;
+
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        try {
-            if (env.getProperty("spring.profiles.active").equals("prod")) {
+        System.out.println("isSecuyriutDis: " + isSecurityDisabled);
+        System.out.println("Profile: " + activeProfile);
+            if (!isSecurityDisabled) {
                 System.out.println("Prod security configurations activating...");
                 http
                     .requiresChannel(channel ->
@@ -29,12 +41,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             } else {
                 System.out.println("Dev security configurations activating...");
                 http.
-                    authorizeRequests()
-                    .antMatchers("/**").permitAll()
-                    .anyRequest().authenticated();
+                        authorizeRequests()
+                        .antMatchers("/**").permitAll()
+                        .anyRequest().authenticated();
             }
-        } catch (NullPointerException e) {
-            //throw new IllegalStateException("Environment was not set. Use --spring.profiles.active");
-        }
     }
 }
