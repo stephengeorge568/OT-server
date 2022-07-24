@@ -229,9 +229,9 @@ public class OperationalTransformationTests {
     @Test
     void transform_OnlyFirstHistoryRelevant() {
         StringChangeRequest request = new StringChangeRequest("a", new MonacoRange(5, 5, 1, 1 ), 1);
-        request.setIdentity("C");
+        request.setIdentity(1);
         StringChangeRequest history1 = new StringChangeRequest("", new MonacoRange(1, 5, 1, 1), 1);
-        history1.setIdentity("H");
+        history1.setIdentity(2);
         ArrayList<StringChangeRequest> historyList = new ArrayList<>();
         historyList.add(history1);
 
@@ -251,11 +251,11 @@ public class OperationalTransformationTests {
     @Test
     void transform_test() {
         StringChangeRequest request = new StringChangeRequest("d", new MonacoRange(39, 39, 1, 1 ), 1);
-        request.setIdentity("3");
+        request.setIdentity(1);
         StringChangeRequest history1 = new StringChangeRequest("a", new MonacoRange(37, 37, 1, 1), 1);
-        history1.setIdentity("3");
+        history1.setIdentity(1);
         StringChangeRequest history2 = new StringChangeRequest("", new MonacoRange(37, 38, 1, 1), 1);
-        history2.setIdentity("31");
+        history2.setIdentity(2);
         ArrayList<StringChangeRequest> historyList = new ArrayList<>();
         historyList.add(history2);
         historyList.add(history1);
@@ -276,9 +276,9 @@ public class OperationalTransformationTests {
     @Test
     void transform_test2() {
         StringChangeRequest request = new StringChangeRequest("g", new MonacoRange(35, 35, 2, 2 ), 1);
-        request.setIdentity("3");
+        request.setIdentity(1);
         StringChangeRequest history1 = new StringChangeRequest("u", new MonacoRange(34, 34, 2, 2), 1);
-        history1.setIdentity("3");
+        history1.setIdentity(1);
         ArrayList<StringChangeRequest> historyList = new ArrayList<>();
         historyList.add(history1);
 
@@ -298,9 +298,9 @@ public class OperationalTransformationTests {
     @Test
     void transform_test3() { // restart here
         StringChangeRequest request = new StringChangeRequest("c", new MonacoRange(49, 49, 6, 6 ), 1);
-        request.setIdentity("31");
+        request.setIdentity(2);
         StringChangeRequest history1 = new StringChangeRequest("d", new MonacoRange(1, 51, 1, 8), 1);
-        history1.setIdentity("3");
+        history1.setIdentity(1);
         ArrayList<StringChangeRequest> historyList = new ArrayList<>();
         historyList.add(history1);
 

@@ -18,7 +18,7 @@ public class StringChangeRequest {
     /**
      * The identifier of the client. Currently, this is the client's IP.
      */
-    private String identity;
+    private Integer identity;
 
     /**
      * The range of the operation
@@ -91,11 +91,11 @@ public class StringChangeRequest {
     }
 
 
-    public String getIdentity() {
+    public Integer getIdentity() {
         return identity;
     }
 
-    public StringChangeRequest setIdentity(String identity) {
+    public StringChangeRequest setIdentity(Integer identity) {
         this.identity = identity;
         return this;
     }

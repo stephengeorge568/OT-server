@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: tesseract.OTserver.util.MonacoRangeUtilTests
 -------------------------------------------------------------------------------
-Tests run: 29, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.163 s - in tesseract.OTserver.util.MonacoRangeUtilTests
+Tests run: 29, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.189 s - in tesseract.OTserver.util.MonacoRangeUtilTests
