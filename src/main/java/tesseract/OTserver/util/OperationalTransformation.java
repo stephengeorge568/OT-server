@@ -1,9 +1,11 @@
 package tesseract.OTserver.util;
 
+import org.springframework.web.client.HttpServerErrorException;
 import tesseract.OTserver.objects.MonacoRange;
+import tesseract.OTserver.objects.Pair;
 import tesseract.OTserver.objects.StringChangeRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.util.*;
 
 public class OperationalTransformation {
 
@@ -16,25 +18,49 @@ public class OperationalTransformation {
      */
     public static ArrayList<StringChangeRequest> transform(StringChangeRequest request,
                                                          HashMap<Integer, ArrayList<StringChangeRequest>> history) {
-        // The first request in transformedRequests will always be the original, left-most request
-        ArrayList<StringChangeRequest> transformedRequests = new ArrayList<>(2);
-        transformedRequests.add(request);
 
-        // For all relevant requests... transform
-        for (StringChangeRequest historicalRequest : getRelevantHistory(request.getRevID(), history)) {
+        ArrayList<StringChangeRequest> transformedRequests = new ArrayList<>();
 
-            // If previous request and current request share same identity, ignore, transform otherwise
-            if (!(request.getIdentity().equals(historicalRequest.getIdentity()))) { //  && request.getRevID() == historicalRequest.getRevID() why was this inside !()??
-                System.out.println("Transforming...");
-                StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, transformedRequests.get(0));
-                StringChangeRequest temp = transformOperation(historicalRequest, pair[0]);
-                transformedRequests.set(0, temp);
+        // Queue of requests that still need to be transformed.
+        // Caused by resolveConflictingRanges sometimes creating another request
+        // as a byproduct, which also must be transformed.
+        Queue<Pair<StringChangeRequest, Integer>> toTransformQueue = new LinkedList<>();
+        toTransformQueue.add(new Pair(request, -1));
+
+        Pair<StringChangeRequest, Integer> currentRequest;
+        while ((currentRequest = toTransformQueue.poll()) != null) {
+
+            ArrayList<StringChangeRequest> relevantHistory = getRelevantHistory(request.getRevID(), history); // HISOTRY AMY NEED TO BE A QUEEU
+
+            for (int i = 0; i < relevantHistory.size(); i++) {
+                StringChangeRequest historicalRequest = relevantHistory.get(i);
+                // If previous request and current request share same identity, ignore, transform otherwise
+                if (!request.getIdentity().equals(historicalRequest.getIdentity()) || historicalRequest.getIdentity() == -1) {
+                    StringChangeRequest pair[] = MonacoRangeUtil.resolveConflictingRanges(historicalRequest, currentRequest.getKey());
+
+                    // current request may have been added due to resolveConflictingRanges
+                    // so this makes sure that historicalRequests that have already altered currentRequest
+                    // do not transform currentRequest again
+                    if (currentRequest.getValue() <= i) {
+                        transformOperation(historicalRequest, pair[0]);
+                    }
+
+                    // If resolve conflicting ranges produced a second change, enqueue that request
+                    if (pair[1] != null) {
+                        toTransformQueue.add(new Pair<StringChangeRequest, Integer>(pair[1], i));
+                    }
+                }
             }
-            //if (pair[1] != null) transformedRequests.add(transformOperation(historicalRequest, pair[1]));
+
+            // Transform current request based on previous current requests.
+            for (StringChangeRequest newHistoricalRequest : transformedRequests) {
+                if (MonacoRangeUtil.isPreviousRequestRelevent(newHistoricalRequest.getRange(), currentRequest.getKey().getRange()))
+                    transformOperation(newHistoricalRequest, currentRequest.getKey());
+            }
+
+            transformedRequests.add(currentRequest.getKey());
         }
-        if (transformedRequests.isEmpty()) {
-            transformedRequests.add(request);
-        }
+
         return transformedRequests;
     }
 
@@ -51,6 +77,7 @@ public class OperationalTransformation {
         ArrayList<StringChangeRequest> relevantRequests = new ArrayList<>();
 
         history.forEach(((id, list) -> {
+
             if (id >= revID) {
                 relevantRequests.addAll(list); //TODO does this do what i think. add to beginning or end. i think end.
             }
@@ -67,10 +94,21 @@ public class OperationalTransformation {
      */
     public static StringChangeRequest transformOperation(StringChangeRequest prev, StringChangeRequest next) {
 
-        int newSC = next.getRange().getStartColumn();
-        int newEC = next.getRange().getEndColumn();
-        int newSL = next.getRange().getStartLineNumber();
-        int newEL = next.getRange().getEndLineNumber();
+        //region Code grouping for shorthand names for commonly used getters
+        int prevSC = prev.getRange().getStartColumn();
+        int prevEC = prev.getRange().getEndColumn();
+        int prevSL = prev.getRange().getStartLineNumber();
+        int prevEL = prev.getRange().getEndLineNumber();
+        int nextSC = next.getRange().getStartColumn();
+        int nextEC = next.getRange().getEndColumn();
+        int nextSL = next.getRange().getStartLineNumber();
+        int nextEL = next.getRange().getEndLineNumber();
+        //endregion
+
+        int newSC = nextSC;
+        int newEC = nextEC;
+        int newSL = nextSL;
+        int newEL = nextEL;
         int numberOfNewLinesInPrev = (int) prev.getText().chars().filter(x -> x == '\n').count();
 
         int prevTextLengthAfterLastNewLine = prev.getText().length();
@@ -82,56 +120,53 @@ public class OperationalTransformation {
         if (MonacoRangeUtil.isPreviousRequestRelevent(prev.getRange(), next.getRange())) {
 
             int netPrevNewLineNumberChange = numberOfNewLinesInPrev
-                    - (prev.getRange().getEndLineNumber() - prev.getRange().getStartLineNumber());
+                    - (prevEL - prevSL);
 
-            boolean isPrevSimpleInsert = prev.getRange().getStartColumn() == prev.getRange().getEndColumn()
-                    && prev.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber();
+            boolean isPrevSimpleInsert = prevSC == prevEC
+                    && prevSL == prevEL;
 
-            // TODO numberOfNewLinesInPrev > 0 may be redundant. clean up
-            // If simple insert, range behaves differently.
             if (isPrevSimpleInsert) {
                 if (numberOfNewLinesInPrev > 0) {
-                    if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
-                        newSC = newSC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
-                    } if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
-                        newEC = newEC - prev.getRange().getEndColumn() + prevTextLengthAfterLastNewLine + 1;
+                    if (nextSL == prevEL) {
+                        newSC = newSC - prevEC + prevTextLengthAfterLastNewLine + 1;
+                    } if (nextEL == prevEL) {
+                        newEC = newEC - prevEC + prevTextLengthAfterLastNewLine + 1;
                     }
                 } else {
-                    if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+                    if (nextSL == prevEL) {
                         newSC = newSC + prevTextLengthAfterLastNewLine;
-                    } if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+                    } if (nextEL == prevEL) {
                         newEC = newEC + prevTextLengthAfterLastNewLine;
                     }
                 }
             } else {
                 if (numberOfNewLinesInPrev > 0) {
-                    if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
-                        newSC = (newSC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine + 1;
+                    if (nextSL == prevEL) {
+                        newSC = (newSC - prevEC) + prevTextLengthAfterLastNewLine + 1;
                     }
-                    if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
-                        newEC = (newEC - prev.getRange().getEndColumn()) + prevTextLengthAfterLastNewLine + 1;
+                    if (nextEL == prevEL) {
+                        newEC = (newEC - prevEC) + prevTextLengthAfterLastNewLine + 1;
                     }
                 } else {
                     // prev is range and there is no new lines in prev text
 
-
                     // this all assumes next is on same line as prev
-                    int numberOfCharsDeletedOnPrevLine = prev.getRange().getEndColumn()
-                                - prev.getRange().getStartColumn();
-                    if (next.getRange().getStartLineNumber() == prev.getRange().getEndLineNumber()) {
+                    int numberOfCharsDeletedOnPrevLine = prevEC - prevSC;
+
+                    if (nextSL == prevEL) {
                         newSC = newSC - numberOfCharsDeletedOnPrevLine + prev.getText().length();
                     } else { // next start is on diff line than prev start but still within range
-                        newSC = prev.getRange().getStartColumn() + prev.getText().length();
+                        newSC = prevSC + prev.getText().length();
                     }
                     
-                    if (next.getRange().getEndLineNumber() == prev.getRange().getEndLineNumber()) {
+                    if (nextEL == prevEL) {
                         newEC = newEC - numberOfCharsDeletedOnPrevLine + prev.getText().length();
                     } else {
+                        // If next is simple insert, EC must be also set same as SC.
+                        // If next is not simple insert, EC does not have to change because only
+                        // the line number will shift. Text does not wrap in code editor format.
                         if (MonacoRangeUtil.isRangeSimpleInsert(next.getRange())) {
                             newEC = newSC;
-                        } else {
-                            // TODO
-                            System.out.println("NOT IMPLEMENTED.");
                         }
                     }
                     // deal with new on diff line (but still inside prev range)
@@ -140,13 +175,13 @@ public class OperationalTransformation {
 
             // If next start column within range of prev, push next.SL to prev.SL + # of new lines in prev
             if (MonacoRangeUtil.isSCWithinRange(prev.getRange(), next.getRange())) {
-                newSL = prev.getRange().getStartLineNumber() + numberOfNewLinesInPrev;
+                newSL = prevSL + numberOfNewLinesInPrev;
             } else {
                 newSL += netPrevNewLineNumberChange;
             }
 
             if (MonacoRangeUtil.isECWithinRange(prev.getRange(), next.getRange())) {
-                newEL = prev.getRange().getStartLineNumber() + numberOfNewLinesInPrev;
+                newEL = prevSL + numberOfNewLinesInPrev;
             } else {
                 newEL += netPrevNewLineNumberChange;
             }

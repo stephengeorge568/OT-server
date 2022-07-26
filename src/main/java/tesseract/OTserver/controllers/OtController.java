@@ -29,6 +29,8 @@ public class OtController {
     @ResponseBody
     public ResponseEntity<Integer> stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
         System.out.printf("%s\n", request.toString());
+//        System.out.println(this.otService.getDocumentModel());
+//        System.out.println();
         return ResponseEntity.ok(this.otService.submitChange(request));
     }
 
@@ -40,7 +42,6 @@ public class OtController {
     @ResponseBody
     public ResponseEntity<Integer> getIdentity(HttpServletRequest httpRequest) {
         System.out.printf("%s has connected.\n", httpRequest.getRemoteAddr());
-        System.out.println(httpRequest.getRequestedSessionId());
         otService.incrementClientIdentityCounter();
         return ResponseEntity.ok(otService.getClientIdentityCounter());
     }

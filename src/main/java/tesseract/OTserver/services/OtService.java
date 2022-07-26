@@ -36,19 +36,9 @@ public class OtService {
      * @return the new document revID
      */
     public Integer submitChange(StringChangeRequest request) {
-        // put change in pending changes queue
+
         currentDocument.getPendingChangesQueue().add(request);
-
-        // wait for this requests turn to transform
         waitForTurn(request);
-
-//        this.currentDocument.getChangeHistory().forEach((revId, list) -> {
-//            System.out.printf("\tHistory: %d\n", revId);
-//            list.forEach((r) -> {
-//                System.out.printf("\t\t%s\n", r.toString());
-//            });
-//        });
-
 
         // when this request's turn is next, transform
         ArrayList<StringChangeRequest> newChangeRequests = OperationalTransformation.transform(request, this.currentDocument.getChangeHistory());
@@ -64,6 +54,7 @@ public class OtService {
                 else
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
 
+                System.out.println("Update->" + changedRequest.toString()+"\n");
                 updateModel(changedRequest);
                 propogateToClients(changedRequest);
             }

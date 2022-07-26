@@ -37,13 +37,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             channel.anyRequest().requiresSecure())
                     .authorizeRequests(authorize ->
                             authorize.anyRequest().permitAll())
-                    .csrf().disable();
+                    .csrf().disable(); // otherwise post requests get 403 forbidden. temporary hotfix
             } else {
                 System.out.println("Dev security configurations activating...");
                 http.
                         authorizeRequests()
                         .antMatchers("/**").permitAll()
                         .anyRequest().authenticated();
+                http.csrf().disable();
             }
     }
 }

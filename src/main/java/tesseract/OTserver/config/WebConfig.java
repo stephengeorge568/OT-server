@@ -21,6 +21,8 @@ public class WebConfig implements WebMvcConfigurer {
         try {
             if (env.getProperty("spring.profiles.active").equals("prod")) {
                 registry.addMapping("/**"); // TODO
+            } else {
+                registry.addMapping("/**");
             }
         } catch (NullPointerException e) {
             registry.addMapping("/**");
