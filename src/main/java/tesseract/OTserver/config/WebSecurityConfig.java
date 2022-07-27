@@ -28,8 +28,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        System.out.println("isSecuyriutDis: " + isSecurityDisabled);
-        System.out.println("Profile: " + activeProfile);
             if (!isSecurityDisabled) {
                 System.out.println("Prod security configurations activating...");
                 http

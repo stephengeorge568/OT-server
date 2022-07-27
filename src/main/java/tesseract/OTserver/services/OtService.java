@@ -54,7 +54,6 @@ public class OtService {
                 else
                     this.currentDocument.getChangeHistory().put(changedRequest.getRevID(), new ArrayList<>(Arrays.asList(changedRequest)));
 
-                System.out.println("Update->" + changedRequest.toString()+"\n");
                 updateModel(changedRequest);
                 propogateToClients(changedRequest);
             }

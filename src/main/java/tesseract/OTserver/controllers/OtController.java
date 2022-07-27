@@ -29,8 +29,6 @@ public class OtController {
     @ResponseBody
     public ResponseEntity<Integer> stringChange(HttpServletRequest httpRequest, @RequestBody StringChangeRequest request) {
         System.out.printf("%s\n", request.toString());
-//        System.out.println(this.otService.getDocumentModel());
-//        System.out.println();
         return ResponseEntity.ok(this.otService.submitChange(request));
     }
 

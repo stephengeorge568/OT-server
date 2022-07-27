@@ -64,11 +64,9 @@ public class OperationalTransformation {
         return transformedRequests;
     }
 
-    // returns list of changes with revIDs after given revID. List is ordered by revID in ascending order...
-    // i.e oldest changes are at head of list
-
     /**
      * Get the historical requests that affect the current request based on its revID
+     * oldest changes at head of list, ascending order
      * @param revID the revID of the current request
      * @param history the history map
      * @return list of requests that affect the current request
@@ -79,7 +77,7 @@ public class OperationalTransformation {
         history.forEach(((id, list) -> {
 
             if (id >= revID) {
-                relevantRequests.addAll(list); //TODO does this do what i think. add to beginning or end. i think end.
+                relevantRequests.addAll(list);
             }
         }));
 
@@ -148,9 +146,6 @@ public class OperationalTransformation {
                         newEC = (newEC - prevEC) + prevTextLengthAfterLastNewLine + 1;
                     }
                 } else {
-                    // prev is range and there is no new lines in prev text
-
-                    // this all assumes next is on same line as prev
                     int numberOfCharsDeletedOnPrevLine = prevEC - prevSC;
 
                     if (nextSL == prevEL) {

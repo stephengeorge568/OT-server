@@ -126,7 +126,7 @@ public class StringChangeRequest {
 
     @Override
     public String toString() {
-        return "StringChangeRequest{" +
+        return "{" +
                 "timestamp='" + timestamp + '\'' +
                 ", text='" + text + '\'' +
                 ", identity='" + identity + '\'' +
